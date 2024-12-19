@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9011182478978794805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1803875816154756393}
+  - component: {fileID: 6543197622533710476}
+  m_Layer: 0
+  m_Name: ItemSpawnpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1803875816154756393
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011182478978794805}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.058, y: 1.983, z: -0.028}
+  m_LocalScale: {x: 1.0416667, y: 1.0416667, z: 1.0416667}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6543197622533710476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011182478978794805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b72683f865289348b172aa481baf70e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootItems:
+  - itemPrefab: {fileID: 3862373387412515118, guid: 9b1ddfb48c676e24db5f8c79368dfc15, type: 3}
+    DropChance: 0.96
+  - itemPrefab: {fileID: 5612227412443347303, guid: c316fc30d4f71554b8a47ff11ce889e5, type: 3}
+    DropChance: 0.86
+  - itemPrefab: {fileID: 2544567853543082052, guid: 10bb29cc6abcced41930e3030e23b4c4, type: 3}
+    DropChance: 0.945
+  - itemPrefab: {fileID: 7803478756346727200, guid: b2ab8630e77ba7144926f9b0df0598cd, type: 3}
+    DropChance: 0.085
+  - itemPrefab: {fileID: 1470372568425585326, guid: 8fd0d9d6223ab8346a0f31a86c500550, type: 3}
+    DropChance: 0.1
+  - itemPrefab: {fileID: 2795495212227323672, guid: 9cabf2e477c46ae4a81e8d9d807b1f24, type: 3}
+    DropChance: 0.1
+  - itemPrefab: {fileID: 8886132112611124200, guid: 6ce575edc9d63ea4caf1ea6622eceed2, type: 3}
+    DropChance: 0.824
+  - itemPrefab: {fileID: 6108967130789173057, guid: a5a8bc01ef0c52d4a8ef43bee26ce3a2, type: 3}
+    DropChance: 0.106
+  - itemPrefab: {fileID: 2896640261934269262, guid: 324ca00c4f4ed974b87bec4bf246aeb5, type: 3}
+    DropChance: 0.204
