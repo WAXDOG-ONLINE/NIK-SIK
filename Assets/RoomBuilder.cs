@@ -17,7 +17,8 @@ public class RoomBuilder : MonoBehaviour
     public float hallwayOffset = 10;
     //cap on main path rooms
     public float firstBatchRooms = 9;
-
+    public float maxIterations = 100;
+    private float iteration = 0;
     public bool disaplyMainPath = false;
     public GameObject wall;
     public Material mainPathMaterial;
@@ -414,8 +415,9 @@ public class RoomBuilder : MonoBehaviour
             //choose door from chosenRoom
              int chosenDoorwayIndex = UnityEngine.Random.Range(0,chosenRoom.doorways.Count);
             Transform chosenDoorway = chosenRoom.doorways[chosenDoorwayIndex];
-
-        while(failedToPlaceEssential == true){
+        iteration = 0;
+        while(failedToPlaceEssential == true &&  iteration < maxIterations){
+            iteration++;
             //choose random room, choose random doorway from that room
             
             List<GameObject> remainingRoomsWithDoors = new List<GameObject>();

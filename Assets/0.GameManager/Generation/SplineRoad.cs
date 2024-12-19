@@ -153,7 +153,7 @@ public class SplineRoad : MonoBehaviour
                 float uvDistance = uvOffset + distance;
                 uvs.AddRange(new List<Vector2> { new Vector2(uvOffset, 0), new Vector2(uvOffset, 1), new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),
                 //my uvs here, figure out uv mapping, maybe splitting walls into submesh
-                new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),
+                new Vector2(uvOffset, 0), new Vector2(uvOffset, 1),new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),
                 });
 
                 uvOffset += distance;
