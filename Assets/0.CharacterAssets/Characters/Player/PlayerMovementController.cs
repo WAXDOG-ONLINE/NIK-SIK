@@ -23,6 +23,8 @@ public class PlayerMovementController : MonoBehaviour
     public float startRunSpeed = 12f;
     public float startLookSpeed = 2f;
     public float jumpPower = 7f;
+
+    public float airControlBlend = 0;
     public float gravity = 10f;
     public AudioSource walkSound;
     public AudioSource runSound;
@@ -48,10 +50,21 @@ public class PlayerMovementController : MonoBehaviour
  
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0; // Modify this line
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0; // Modify this line
         float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+        if (characterController.isGrounded)
+        {
+            moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+        }
+        else
+        {
+            // Blend input direction with current velocity to add a small amount of control
+            Vector3 inputDirection = (forward * curSpeedX) + (right * curSpeedY);
+            moveDirection = Vector3.Lerp(moveDirection, inputDirection, airControlBlend); // Adjust the blend factor as needed
+        }
  
        if(characterController.isGrounded && characterController.velocity.magnitude > 0 ){
         if(isRunning){
