@@ -147,6 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4593524266819693494}
   - component: {fileID: 1430166371164276203}
+  - component: {fileID: 1442576520016943481}
   - component: {fileID: 9133304370240861850}
   - component: {fileID: 7058184643135471553}
   - component: {fileID: 222177160955898989}
@@ -201,6 +202,70 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
+--- !u!114 &1442576520016943481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258069556095949318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce73aeeef428dfa43a0b2bad5d5cb9c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionEvents:
+  - actionName: RandomWalk
+    actionChance: 1
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 9133304370240861850}
+          m_TargetAssemblyTypeName: EnemyAI, Assembly-CSharp
+          m_MethodName: randomWalk
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - actionName: Idle
+    actionChance: 1
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 9133304370240861850}
+          m_TargetAssemblyTypeName: EnemyAI, Assembly-CSharp
+          m_MethodName: Idle
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - actionName: ApproachPlayer
+    actionChance: 0.289
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 9133304370240861850}
+          m_TargetAssemblyTypeName: EnemyAI, Assembly-CSharp
+          m_MethodName: approachPlayer
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &9133304370240861850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,7 +302,14 @@ MonoBehaviour:
   chaseSpeed: 6
   walkSpeed: 2
   range: 10
+  idleing: 0
   maxIdleTime: 4
+  inRoachHunt: 0
+  eatingRoach: 0
+  inChase: 0
+  damageDistance: 4
+  sicknessDrainDistance: 10
+  actionTable: {fileID: 0}
 --- !u!114 &7058184643135471553
 MonoBehaviour:
   m_ObjectHideFlags: 0

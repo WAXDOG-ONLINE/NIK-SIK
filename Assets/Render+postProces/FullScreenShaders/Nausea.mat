@@ -39,7 +39,7 @@ Material:
     m_Floats:
     - _Amplitude: 2.71
     - _NoiseScroll: 0
-    - _Noise_Scale: 10.005797
+    - _Noise_Scale: 19.48787
     - _UV_IN: 10
     - _blend: 0
     m_Colors:
