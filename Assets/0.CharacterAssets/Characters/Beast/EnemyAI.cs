@@ -82,7 +82,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     //Idle params
     public bool idleing = false;
-    private float idleTimer;
+  
     public float maxIdleTime = 4;
 
     //other
@@ -92,7 +92,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     private float eatingTimerMax = 5;
 
-    private float eatingTimer = 0;
+   
 
     public bool eatingRoach = false;
  
@@ -101,6 +101,8 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
     public float damageDistance = 4;
     public float sicknessDrainDistance = 10;
     private bool attackCoolingDown = false;
+
+    public ActionTable actionTable;
    
 
     
@@ -114,6 +116,8 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         player = GameObject.Find("Player");
        
         agent.SetDestination(centrePoint.position);
+
+        actionTable = transform.GetComponent<ActionTable>();
         
     }
     //todo
@@ -121,8 +125,10 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
     
     void Update()
     {
+        //caclulate distance to player
         float distanceToPlayer = (player.transform.position - transform.position).magnitude;
         
+        //if player is close enough to attack
         if(distanceToPlayer < damageDistance){
             //attack
             if(!attackCoolingDown){
@@ -130,7 +136,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
             StartCoroutine(attackCoolDown());
             }
         }
-
+        //if player is close enough to drain sickness and increase craving
         if(distanceToPlayer < sicknessDrainDistance){
             if(player.GetComponent<ActionManager>().sickness > 5){
 
@@ -156,8 +162,9 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
         //count the number of roaches in vision sphere and add them to a list
         //when we have found a roach, choose the first roach
-       
+       //assign previous value before assinging new
         roachInSightRangePrevious = roachInSightRange;
+        //check if roach is in sight range
         int count = beastVision.Filter(roaches, "roaches");
         if(count > 0){
              roach = roaches[0];
@@ -207,7 +214,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         
        
             //when chase starts play int chase and play chase
-       //chase start
+       //if player is in sight range and wasnt before and not in chase, start chase
         if(playerInSightRange && (playerInSightRange != playerInSightRangePrevious) && !inChase && !inRoachHunt && !eatingRoach ){
             beastIntChase.pitch = UnityEngine.Random.Range(.9f,1.1f);
             beastIntChase.Play();
@@ -237,14 +244,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         }
 
 
-  
 
-
-
-
-        
- 
-        //if he cant see you and he just saw you and chase end has started, start chase end
      
         ChaseCountDown();
     
@@ -261,15 +261,21 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
             if(!beastBreathing.isPlaying){
             beastBreathing.Play();
             }
-            
-            
-               
-               
-               //choose new point
-                int choice = UnityEngine.Random.Range(1,11);
 
-                if(choice >= 4 && choice <= 7){
-                    debugStateColor = Color.green;
+            
+            actionTable.chooseAction();
+               
+               
+               
+        }
+        
+    
+    }
+
+
+    //sets variables for chase sequence and sets target to players position
+     public void randomWalk(){
+    debugStateColor = Color.green;
                     //look for point
                     bool foundPoint = false;
                     //while a point has not been found look for points
@@ -288,35 +294,28 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
                         agent.stoppingDistance = 0;
                         agent.speed = walkSpeed;
 
-            
-
-                    
-
-                }else if(choice >= 8 && choice <=9){
-                    
-                    StartCoroutine(Idle());
-                    
 
 
 
-                } else if(choice >= 1 && choice <= 3){
-                    debugStateColor = Color.magenta;
+     }
+     
+     public void approachPlayer(){
+                debugStateColor = Color.magenta;
                 beastAnim.SetBool("IsRunning?",true);
                 agent.speed = 10f;
                 agent.stoppingDistance = 65;
                 agent.SetDestination(player.transform.position);
-
-                } 
-            
-        }
-        
-    
-    }
+                
 
 
-    //sets variables for chase sequence and sets target to players position
+     }
      
-     IEnumerator Idle(){
+     public void Idle(){
+
+        
+        StartCoroutine(IdleRoutine());
+     }
+      IEnumerator IdleRoutine(){
         idleing = true;
         beastAnim.SetBool("IsRunning?",false);
         beastAnim.SetBool("IsWalking",false);
@@ -446,3 +445,6 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     
 }
+
+
+
