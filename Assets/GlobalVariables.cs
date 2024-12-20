@@ -16,13 +16,13 @@ public class GlobalVariables : MonoBehaviour
     // Start is called before the first frame update
     void onAwake(){
 
-player = GameObject.Find("Player");
+
 
 
     }
     void Start()
     {
-        
+        player = GameObject.Find("Player");
     }
 
     // Update is called once per frame

@@ -217,6 +217,7 @@ if(Input.GetButton("Fire1")&& Input.GetButton("Fire2") && isPerformingAction == 
    tryDepositCig(false);
    tryWithdrawlCig(true);
    tryWithdrawlCig(false);
+   tryInteract();
 }else{
     
 }
@@ -243,6 +244,7 @@ if(Input.GetButton("Fire1") || Input.GetButton("Fire2")){
     tryPurchase();
     trySmokeCig(chirality);
     trySellItems();
+    tryInteract();
 
 
 
@@ -295,6 +297,26 @@ if(smokeTimer <= 0){
 
 //action functions
 
+public void tryInteract(){
+
+
+
+if(isPerformingAction == false){
+var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    RaycastHit hit;
+        if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
+            
+        var selection = hit.transform.gameObject;
+            //check if hit object is item
+            
+            if(selection.GetComponent<GameButton>()){
+                isPerformingAction = true;
+                selection.GetComponent<GameButton>().activate();
+                
+                }
+
+            }
+}}
 private void tryOpenLocker(){
 
 if(isPerformingAction == false){

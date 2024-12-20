@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class RoomBuilder : MonoBehaviour
@@ -34,6 +35,10 @@ public class RoomBuilder : MonoBehaviour
     public GameObject startRoom;
     
     public GameObject endRoom;
+
+    public bool mapBuilt = false;
+
+    public GameObject level;
   
     //used for iteration
     private GameObject previousRoomObject;
@@ -44,12 +49,14 @@ public class RoomBuilder : MonoBehaviour
     //list of rooms generated in a loop that can not be added until loop end due to c# limitations
     public List<GameObject> roomsToAddOnLoopEnd = new List<GameObject>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
 
-        //place start room at origin
+
+    // Start is called before the first frame update
+    
+    public void buildMap(){
+        if(mapBuilt == false){
+            mapBuilt = true;
+          //place start room at origin
         previousRoomObject = Instantiate(startRoom, startRoom.transform.position, quaternion.identity);
         rooms.Add(previousRoomObject);
        //dosen't check for collision
@@ -66,8 +73,18 @@ public class RoomBuilder : MonoBehaviour
 
        
         splineGenerator.generateHallways(doorways);
-        
-    }
+        GameObject player = GameObject.Find("Player");
+        GameObject level = new GameObject("Level");
+        player.GetComponent<CharacterController>().enabled = false;
+        GameObject.Find("Player").transform.position = new Vector3(0,10,0);
+        player.GetComponent<CharacterController>().enabled = true;
+        //parent rooms to level
+        foreach(GameObject room in rooms){
+            room.transform.parent = level.transform;
+        }
+       
+
+    }}
 
     // Update is called once per frame
     //takes a door from the previous room and generates a new room of it x times then places the end room
@@ -338,7 +355,8 @@ public class RoomBuilder : MonoBehaviour
             DestroyImmediate(generatedRoom.gameObject);
             previousRoom.doorways.Remove(startDoorway);
             //wall of door
-            Instantiate(wall,startDoorway.position,quaternion.identity);
+            Instantiate(wall,startDoorway.position,quaternion.identity).transform.parent = level.transform;
+
             
         }else{
        
@@ -557,10 +575,7 @@ foreach(GameObject roomObject in rooms){
         Vector3 previousRoomPostion = previousRoomObject.transform.position;
         //select random door from previous room
 
-        //choose room type
-        int roomType = 0;
-        
-         roomType = UnityEngine.Random.Range(0,2);
+       
      
         
        int roomIndex = UnityEngine.Random.Range(0,oneDoorRooms.Count);
@@ -626,7 +641,7 @@ foreach(GameObject roomObject in rooms){
             DestroyImmediate(generatedRoom.gameObject);
             previousRoom.doorways.Remove(startDoorway);
             //wall of door
-            Instantiate(wall,startDoorway.position,quaternion.identity);
+            Instantiate(wall,startDoorway.position,quaternion.identity).transform.parent = level.transform;
             
         }else{
        
@@ -649,6 +664,7 @@ foreach(GameObject roomObject in rooms){
         }
 
         }}
+        rooms.AddRange(roomsToAddOnLoopEnd);
 
     
 }
