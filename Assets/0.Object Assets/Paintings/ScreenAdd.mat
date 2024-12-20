@@ -54,9 +54,9 @@ Material:
     - _QueueOffset: 0
     - _ScanLineStrength: 0.12
     - _VerticalSpeed: -0.7
-    - _lightStrength: 2.76
+    - _lightStrength: 0.84
     m_Colors:
-    - _Frequency: {r: 0.32, g: 41.9, b: 0, a: 0}
+    - _Frequency: {r: 0.32, g: 100, b: 0, a: 0}
     - _LightColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1594987207251375095

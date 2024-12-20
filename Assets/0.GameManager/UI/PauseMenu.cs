@@ -7,11 +7,17 @@ public class PauseMenu : MonoBehaviour
 {
     public bool isPaused;
     public GameObject pauseMenu;
+    public static GameObject loadingScreen;
+
+    public static GameObject progressText;
     // Start is called before the first frame update
     void Start()
     {
         pauseMenu.SetActive(false);
+        loadingScreen = GameObject.Find("LoadingScreen");
+        progressText = GameObject.Find("ProgressText");
         
+        loadingScreen.SetActive(false);
     }
     void Update()
     {
@@ -50,4 +56,6 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
        
     }
+
+    
 }
