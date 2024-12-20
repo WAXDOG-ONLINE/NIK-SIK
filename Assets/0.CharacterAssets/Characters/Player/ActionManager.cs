@@ -165,7 +165,7 @@ if(isVaping){
     }
 }else{
     if(craving < 100){
-    craving = craving + 2*Time.deltaTime;
+    craving = craving + 1*Time.deltaTime;
     }
 }
 

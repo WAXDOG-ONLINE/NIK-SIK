@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -99,7 +100,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     public float damageDistance = 4;
     public float sicknessDrainDistance = 10;
-
+    private bool attackCoolingDown = false;
    
 
     
@@ -121,15 +122,26 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
     void Update()
     {
         float distanceToPlayer = (player.transform.position - transform.position).magnitude;
+        
         if(distanceToPlayer < damageDistance){
-            player.GetComponent<ActionManager>().health += -10*Time.deltaTime;
-
+            //attack
+            if(!attackCoolingDown){
+            player.GetComponent<ActionManager>().health += -25;
+            StartCoroutine(attackCoolDown());
+            }
         }
 
         if(distanceToPlayer < sicknessDrainDistance){
+            if(player.GetComponent<ActionManager>().sickness > 5){
+
             player.GetComponent<ActionManager>().sickness += -10*Time.deltaTime;
+            }
+            if(player.GetComponent<ActionManager>().craving< 99){
             player.GetComponent<ActionManager>().craving += +10*Time.deltaTime;
+            }
         }
+
+
         //when player is vaping increase beast vision distance
         if(player.GetComponent<ActionManager>().vapeSound.isPlaying == true){
             beastVision.distance = 30f;
@@ -179,7 +191,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         CheckIfOnRoach();
     }
 
-    EatRoach();
+   
         //golden roach insight, need list of golden roaches? and check with each one?
         //checxk if roach in vision isntead
         //always eats raoches priotizes golde nraoch take time to eat roaches 
@@ -197,7 +209,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
             //when chase starts play int chase and play chase
        //chase start
         if(playerInSightRange && (playerInSightRange != playerInSightRangePrevious) && !inChase && !inRoachHunt && !eatingRoach ){
-            beastIntChase.pitch = Random.Range(.9f,1.1f);
+            beastIntChase.pitch = UnityEngine.Random.Range(.9f,1.1f);
             beastIntChase.Play();
             beastChase.Play();
             beastRun.Play();
@@ -233,9 +245,9 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         
  
         //if he cant see you and he just saw you and chase end has started, start chase end
-        CheckChaseEnd();
+     
         ChaseCountDown();
-        idleCountDown();
+    
         
        
         
@@ -254,7 +266,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
                
                
                //choose new point
-                int choice = Random.Range(1,11);
+                int choice = UnityEngine.Random.Range(1,11);
 
                 if(choice >= 4 && choice <= 7){
                     debugStateColor = Color.green;
@@ -281,13 +293,9 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
                     
 
                 }else if(choice >= 8 && choice <=9){
-                    debugStateColor = Color.blue;
-                    beastWalk.Stop();
-                    idleing = true;
-                    idleTimer = maxIdleTime;
-                    beastAnim.SetBool("IsRunning?",false);
-                    beastAnim.SetBool("IsWalking",false);
-                    agent.SetDestination(centrePoint.position);
+                    
+                    StartCoroutine(Idle());
+                    
 
 
 
@@ -307,8 +315,20 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
 
     //sets variables for chase sequence and sets target to players position
+     
+     IEnumerator Idle(){
+        idleing = true;
+        beastAnim.SetBool("IsRunning?",false);
+        beastAnim.SetBool("IsWalking",false);
+        agent.SetDestination(centrePoint.position);
+        yield return new WaitForSeconds(maxIdleTime);
+        idleing = false;
+
+
+     }
      private void Chase(){
-       
+       debugStateColor = Color.blue;
+        beastWalk.Stop();
         beastAnim.SetBool("IsRunning?",true);
         beastAnim.SetBool("IsWalking",false);
                 agent.speed = chaseSpeed;
@@ -321,10 +341,13 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     }
     //checks if player is not in sight range and just was, if so, it starts the chase end timer
-    private void CheckChaseEnd(){
+
+    IEnumerator attackCoolDown(){
+        attackCoolingDown = true;
+        yield return new WaitForSeconds(3);
+        attackCoolingDown = false;
 
 
-        
     }
     //countdown for chase timer
     private void ChaseCountDown(){
@@ -354,20 +377,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     }
     //constant countdown for idle timer
-    private void idleCountDown(){
-        if(idleTimer >= 0 && idleing == true){
-
-            idleTimer = idleTimer - Time.deltaTime;
-
-        }
-
-        if(idleTimer <= 0.5 && idleing == true){
-
-            idleing = false;
-        }
-
-
-    }
+   
 
     private void HuntRoach(){
          agent.speed = chaseSpeed;
@@ -375,19 +385,28 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
                 agent.SetDestination(huntedRoach.transform.position);
 
     }
+    IEnumerator EatRoach(){
+        eatingRoach = true;
+        yield return new WaitForSeconds(eatingTimerMax);
+        eatingRoach = false;
+        Destroy(huntedRoach);
+        inRoachHunt = false;
+        agent.SetDestination(centrePoint.position);
+    }
+
     private void CheckIfOnRoach(){
         //agent.remainingDistance <= agent.stoppingDistance
         if(agent.remainingDistance <= agent.stoppingDistance ){
             //roach end
            
-            eatingRoach = true;
            
-            eatingTimer = eatingTimerMax;
+           StartCoroutine(EatRoach());
+            
 
             //destroying causes lots of issues, maybe move roach to a different area, or convert its mesh to goop and untick a findable box.
-            Destroy(huntedRoach);
-          inRoachHunt = false;
-            agent.SetDestination(centrePoint.position);
+            
+          
+            
             //timer to eat and nothing else
          
         }
@@ -395,26 +414,12 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
 
     }
 
-    private void EatRoach(){
-        
-        if(eatingTimer > 0){
-            debugStateColor = Color.white;
-            eatingTimer = eatingTimer - Time.deltaTime;
-
-        }else{
-            eatingRoach = false;
-            //fixes not chasing playing if player in beasts view when fishing meal
-            
-        }
-
-
-
-    }
+   
     //Random Walk function
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
 
-        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
+        Vector3 randomPoint = center + UnityEngine.Random.insideUnitSphere * range; //random point in a sphere 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         { 

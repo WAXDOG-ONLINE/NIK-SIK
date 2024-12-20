@@ -27,7 +27,10 @@ public class RoachSpawner : MonoBehaviour
         _timeUntilSpawn -= Time.deltaTime;
         if(_timeUntilSpawn <= 0){
             if(enabledSpawn){
+            if(GlobalVariables.enemies < GlobalVariables.enemiesMax){    
+            GlobalVariables.enemies++;
             Instantiate(_enemyPrefab, transform.position,   Quaternion.identity);
+            }
             }
             SetTimeUntilSpawn();
         }

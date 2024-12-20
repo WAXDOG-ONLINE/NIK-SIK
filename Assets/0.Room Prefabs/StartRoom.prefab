@@ -2087,6 +2087,14 @@ PrefabInstance:
       propertyPath: _enemyPrefab
       value: 
       objectReference: {fileID: 5971284874048421516, guid: 4e5d6d4fc89ed2a4b9ddee524f3d7c8e, type: 3}
+    - target: {fileID: 7311807706145905387, guid: 9afe4a0593c54434293d006620a1d14a, type: 3}
+      propertyPath: maximumSpawnTime
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7311807706145905387, guid: 9afe4a0593c54434293d006620a1d14a, type: 3}
+      propertyPath: _minimumSpawnTime
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
