@@ -30,6 +30,8 @@ public class SplineRoad : MonoBehaviour
 
     [SerializeField, Min(5)]
     private int resolution = 10;
+    [SerializeField, Range(0.1f, 100f)]
+    private float tilingLength = 2;
     [SerializeField, Range(0.01f,1f)]
     private float m_curveStep = 0.1f;
     [SerializeField]
@@ -77,6 +79,7 @@ public class SplineRoad : MonoBehaviour
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
+        List<Vector3> normals = new List<Vector3>();
 
         int offset = 0;
 
@@ -114,47 +117,77 @@ public class SplineRoad : MonoBehaviour
                 p8h = new Vector3(p8h.x,p8h.y + wallHeight,p8h.z);
         
 
+                int num_verts = 12;
 
+                offset = num_verts * resolution * currentSplineIndex;
+                offset += num_verts * (currentSplinePoint - 1);
+                // we want 3 quads, so 4 points for each quad
+                // and then we want and each quad is split into two triangles
+                // the quads share the same points, but seperate quads dont share
+                // because we need seperate UVs for each quad
+                verts.AddRange(new List<Vector3> { 
+                  // left wall
+                  p1, p3, p5h, p7h, // 0, 1, 2, 3
 
-                offset = 8 * resolution * currentSplineIndex;
-                offset += 8 * (currentSplinePoint - 1);
-                //floor triangles
-                int t1 = offset + 0;
-                int t2 = offset + 2;
-                int t3 = offset + 3;
+                  // floor
+                  p1, p2, p3, p4, // 4, 5, 6, 7
 
-                int t4 = offset + 3;
-                int t5 = offset + 1;
-                int t6 = offset + 0;
+                  // right wall
+                  p2, p4, p6h, p8h, // 8, 9, 10, 11
 
-
-                //wall one triangles
-                int t7h = offset + 0;
-                int t8h = offset + 4;
-                int t9h = offset + 6;
-
-                int t10h = offset + 6;
-                int t11h = offset + 2;
-                int t12h = offset + 0;
-
-                //wall two triangles
-                int t13h = offset + 7;
-                int t14h = offset + 5;
-                int t15h = offset + 1;
-
-                int t16h = offset + 1;
-                int t17h = offset + 3;
-                int t18h = offset + 7;
-
-                verts.AddRange(new List<Vector3> { p1, p2, p3, p4,p5h,p6h,p7h,p8h });
-                tris.AddRange(new List<int> { t1, t2, t3, t4, t5, t6,t7h,t8h,t9h,t10h,t11h,t12h,t13h,t14h,t15h,t16h,t17h,t18h});
-
-                float distance = Vector3.Distance(p1, p3) / 4f;
-                float uvDistance = uvOffset + distance;
-                uvs.AddRange(new List<Vector2> { new Vector2(uvOffset, 0), new Vector2(uvOffset, 1), new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),
-                //my uvs here, figure out uv mapping, maybe splitting walls into submesh
-                new Vector2(uvOffset, 0), new Vector2(uvOffset, 1),new Vector2(uvDistance, 0), new Vector2(uvDistance, 1),
                 });
+
+                //clock wise order ( when looking at the wall from inside the hallway)
+                List<int> segment_triangles = new List<int> {
+                  // Left wall
+                  2, 1, 0,
+                  2, 3, 1,
+
+                  // Floor
+                  4, 7, 5,
+                  4, 6, 7,
+
+                  // right wall
+                  8, 9, 10,
+                  9, 11, 10,
+                };
+
+                // add the offset to all the triangles
+                for (int i = 0; i < segment_triangles.Count; i++)
+                {
+                  segment_triangles[i] += offset;
+                }
+                tris.AddRange(segment_triangles);
+
+                float distance = Vector3.Distance(p1, p3) / tilingLength;
+                List<Vector2> uv_list = new List<Vector2> {
+                  // left wall
+                  new Vector2(0, 0), // p1
+                  new Vector2(1, 0), // p2
+                  new Vector2(0, 1), // p3
+                  new Vector2(1, 1), // p4
+
+                  // floor
+                  new Vector2(0, 1), // 
+                  new Vector2(1, 1), // p4
+                  new Vector2(0, 0), // p1
+                  new Vector2(1, 0), // p2
+
+                  // right wall
+                  new Vector2(0, 0), // p1
+                  new Vector2(1, 0), // p2
+                  new Vector2(0, 1), // p3
+                  new Vector2(1, 1), // p4
+                };
+
+                // multiply by the distance and then add the offset
+                // but just to the u value
+                for (int i = 0; i < uv_list.Count; i++)
+                {
+                  uv_list[i] = new Vector2(uv_list[i].x  * distance + uvOffset, uv_list[i].y);
+                }
+
+                uvs.AddRange(uv_list);
 
                 uvOffset += distance;
             }
@@ -170,9 +203,11 @@ public class SplineRoad : MonoBehaviour
         m.SetVertices(verts);
 
         m.SetTriangles(tris, 0);
-        m.SetTriangles(trisB, 1);
+        // m.SetTriangles(trisB, 1);
 
         m.SetUVs(0, uvs);
+
+        m.SetNormals(normals);
 
 
        /*
