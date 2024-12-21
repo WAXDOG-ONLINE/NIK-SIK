@@ -236,18 +236,19 @@ if(Input.GetButton("Fire1") || Input.GetButton("Fire2")){
    }
 
 
-    tryOpenLocker();
+  
     tryPickUp(chirality);
     tryPlaceCharger(chirality);
     tryPlaceKey(chirality);
     tryVape(chirality);
     tryDepositCash(chirality);
     tryDrinkBeer(chirality);
-    tryPurchase();
+ 
     trySmokeCig(chirality);
-    trySellItems();
+    //for functions that do not require items or chirality
+
     tryInteract();
-    tryBuyVendingMachine();
+   
 
 
 
@@ -299,7 +300,7 @@ if(smokeTimer <= 0){
     }
 
 //action functions
-
+#region interact functions
 public void tryInteract(){
 
 
@@ -312,22 +313,28 @@ var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         var selection = hit.transform.gameObject;
             //check if hit object is item
             
-            if(selection.GetComponent<GameButton>()){
+
+        tryActivateButton(selection);
+        tryOpenLocker(selection);
+        trySellItems(selection);
+        tryBuyVendingMachine(selection);
+        tryPurchase(selection);
+        tryPlaySlotMachine(selection);
+            
+
+            }
+}}
+
+public void tryActivateButton(GameObject selection){
+    if(selection.GetComponent<GameButton>()){
                 isPerformingAction = true;
                 selection.GetComponent<GameButton>().activate();
                 
                 }
+}
+private void tryOpenLocker(GameObject selection){
 
-            }
-}}
-private void tryOpenLocker(){
 
-if(isPerformingAction == false){
-var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
-            
-        var selection = hit.transform.gameObject;
             //check if hit object is item
             
             if(selection.GetComponent<LockerDoor>()){
@@ -337,12 +344,75 @@ var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 
                 }
 
+  
+
+
+
+}
+private void trySellItems(GameObject selection){
+
+    
+                //check if hit object is item
+                
+                if(selection.GetComponent<SellBin>()){
+                    Debug.Log("shitStorm");
+                    isPerformingAction = true;
+                    cashBalace = cashBalace + selection.GetComponent<SellBin>().totalValue;
+                    selection.GetComponent<SellBin>().SellItems();
+                    
+
+
+
+
+}}
+
+private void tryBuyVendingMachine(GameObject selection){
+  
+            
+    
+            //check if hit object is item
+            
+            if(selection.GetComponent<VendingMachine>()){
+                Debug.Log("ahhh!");
+                isPerformingAction = true;
+                if(cashBalace >= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue*1.5){
+                    cashBalace = cashBalace - selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue;
+                    selection.GetComponent<VendingMachine>().sellItem();
+                
+                }
+                }
+
             }
+
+private void tryPurchase(GameObject selection){
+
+
+            
+       
+            //check if hit object is item
+            
+            if(selection.GetComponent<POS>()){
+                if(cashBalace >= selection.GetComponent<POS>().price && !selection.GetComponent<POS>().sold){
+                    cashBalace = cashBalace - selection.GetComponent<POS>().price;
+                    //play cha-CHING!
+                    selection.GetComponent<POS>().Sell();
+                
+                }
+                }
+
+            }
+
+
+private void tryPlaySlotMachine(GameObject selection){
+    if(selection.GetComponent<SlotMachine>()){
+        selection.GetComponent<SlotMachine>().Spin(transform);
+    }
 }
+#endregion
 
 
 
-}
+
 private void SicknessManager(){
 fullScreenEffectController.setVigBlend(sickness);
 
@@ -788,29 +858,7 @@ private void tryPickUp(bool chirality){
 }
 }
 }
-private void trySellItems(){
 
-    if(isPerformingAction == false){
-    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-            if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
-                
-            var selection = hit.transform.gameObject;
-                //check if hit object is item
-                
-                if(selection.GetComponent<SellBin>()){
-                    Debug.Log("shitStorm");
-                    isPerformingAction = true;
-                    cashBalace = cashBalace + selection.GetComponent<SellBin>().totalValue;
-                    selection.GetComponent<SellBin>().SellItems();
-                    
-
-
-                }
-    }
-
-
-}}
 
 private void tryPlaceInventoryLeft(){
     //check if inventory is open, check if firing
@@ -1122,28 +1170,8 @@ if(selection.GetComponent<Outlet>()){
 }
 
 
-private void tryBuyVendingMachine(){
-    if(isPerformingAction == false){
-    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
-            
-        var selection = hit.transform.gameObject;
-            //check if hit object is item
-            
-            if(selection.GetComponent<VendingMachine>()){
-                Debug.Log("ahhh!");
-                isPerformingAction = true;
-                if(cashBalace >= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue*1.5){
-                    cashBalace = cashBalace - selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue;
-                    selection.GetComponent<VendingMachine>().sellItem();
-                
-                }
-                }
 
-            }
-}
-}
+
 
 private void tryPlaceKey(bool chirality){
     setChirality(chirality);
@@ -1220,28 +1248,8 @@ itemRightHand = emptyItem;
 }
 }
 
-private void tryPurchase(){
 
-if(isPerformingAction == false){
-var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
-            
-        var selection = hit.transform.gameObject;
-            //check if hit object is item
-            
-            if(selection.GetComponent<POS>()){
-                if(cashBalace >= selection.GetComponent<POS>().price && !selection.GetComponent<POS>().sold){
-                    cashBalace = cashBalace - selection.GetComponent<POS>().price;
-                    //play cha-CHING!
-                    selection.GetComponent<POS>().Sell();
-                
-                }
-                }
 
-            }
-}
-}
 
 
 
