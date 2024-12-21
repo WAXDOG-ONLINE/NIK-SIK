@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Nausea
-  m_Shader: {fileID: -6465566751694194690, guid: 0a9ede9903b29d94aab9aa0c0cf2e87e, type: 3}
+  m_Name: Ooze
+  m_Shader: {fileID: -6465566751694194690, guid: 9e82bc0c4a7571a42807ac7d279bc4ba, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -36,12 +36,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats:
-    - _Amplitude: 2.71
-    - _NoiseScroll: 0
-    - _Noise_Scale: 16.237366
-    - _UV_IN: 10
-    - _blend: 0
-    m_Colors:
-    - _Pan_Speed: {r: 0.2, g: 0.2, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
+--- !u!114 &7427710931114809671
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7

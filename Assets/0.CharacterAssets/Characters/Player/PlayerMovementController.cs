@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : MonoBehaviour
@@ -26,6 +27,10 @@ public class PlayerMovementController : MonoBehaviour
 
     public float airControlBlend = 0;
     public float gravity = 10f;
+
+    public float pukeSpeedModifier = 1;
+
+    public float goopSpeedModifier = 1;
     public AudioSource walkSound;
     public AudioSource runSound;
 
@@ -57,13 +62,13 @@ public class PlayerMovementController : MonoBehaviour
 
         if (characterController.isGrounded)
         {
-            moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+            moveDirection = ((forward * curSpeedX) + (right * curSpeedY))*pukeSpeedModifier*goopSpeedModifier;
         }
         else
         {
             // Blend input direction with current velocity to add a small amount of control
-            Vector3 inputDirection = (forward * curSpeedX) + (right * curSpeedY);
-            moveDirection = Vector3.Lerp(moveDirection, inputDirection, airControlBlend); // Adjust the blend factor as needed
+            Vector3 inputDirection = ((forward * curSpeedX) + (right * curSpeedY));
+            moveDirection = Vector3.Lerp(moveDirection, inputDirection, airControlBlend); 
         }
  
        if(characterController.isGrounded && characterController.velocity.magnitude > 0 ){
@@ -89,7 +94,7 @@ public class PlayerMovementController : MonoBehaviour
       
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
-            moveDirection.y = jumpPower;
+            moveDirection.y = jumpPower*goopSpeedModifier;
         }
         else
         {
