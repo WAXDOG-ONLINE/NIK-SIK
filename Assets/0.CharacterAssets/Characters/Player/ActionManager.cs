@@ -247,6 +247,7 @@ if(Input.GetButton("Fire1") || Input.GetButton("Fire2")){
     trySmokeCig(chirality);
     trySellItems();
     tryInteract();
+    tryBuyVendingMachine();
 
 
 
@@ -1119,6 +1120,31 @@ if(selection.GetComponent<Outlet>()){
 
 
 }
+
+
+private void tryBuyVendingMachine(){
+    if(isPerformingAction == false){
+    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    RaycastHit hit;
+        if(Physics.Raycast(ray, out hit,pickUpRange,RayCastHitable)){
+            
+        var selection = hit.transform.gameObject;
+            //check if hit object is item
+            
+            if(selection.GetComponent<VendingMachine>()){
+                Debug.Log("ahhh!");
+                isPerformingAction = true;
+                if(cashBalace >= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue*1.5){
+                    cashBalace = cashBalace - selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue;
+                    selection.GetComponent<VendingMachine>().sellItem();
+                
+                }
+                }
+
+            }
+}
+}
+
 private void tryPlaceKey(bool chirality){
     setChirality(chirality);
 
