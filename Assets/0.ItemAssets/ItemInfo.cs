@@ -60,6 +60,7 @@ public class ItemInfo : MonoBehaviour
         dropSound.maxDistance = 10;
         dropSound.volume = 0.5f;
         dropSound.dopplerLevel = 5;
+        dropSound.spatialBlend = 1;
         dropSound.clip = globalVariables.dropSoundClip;
         //add rigid body at start to all items
         
