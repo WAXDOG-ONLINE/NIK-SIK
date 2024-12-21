@@ -117,6 +117,8 @@ public class ActionManager : MonoBehaviour
         [Header("UISTATS")]
         private float currentDeviceBatteryPercentage = 100;
         private float currentPodJuicePercentage = 100;
+
+        private float speedModifier = 1f;
  
     void Update()
     {
@@ -359,23 +361,22 @@ if(sickness > 5){
                  
                  
                 }
+                
 if(sickness > 60){
 
     fullScreenEffectController.setNauseaBlend(true,sickness);
     Puke();
     delayEffect.wetMix = math.remap(60,100,0,1,sickness);
     reverbFilter.enabled= true;
+    playerMovementController.GetComponent<PlayerMovementController>().pukeSpeedModifier = speedModifier;
 
 }else{
     reverbFilter.enabled= false;
     delayEffect.wetMix = 0;
     fullScreenEffectController.setNauseaBlend(false,sickness);
     //reset run speed
-    if(playerMovementController.startRunSpeed != playerMovementController.runSpeed){
-        playerMovementController.runSpeed = playerMovementController.startRunSpeed;
-        playerMovementController.walkSpeed = playerMovementController.startWalkSpeed;
-        playerMovementController.lookSpeed = playerMovementController.startLookSpeed;
-    }
+    speedModifier = 1;
+   
     
     
 }
@@ -390,12 +391,8 @@ private void Puke(){
     pukeTimer = pukeTimer - Time.deltaTime;
 
     if(pukeTimer >7 && pukeTimer < 10){
-playerMovementController.runSpeed = 
-playerMovementController.startRunSpeed*math.remap(10,7, 1,0, pukeTimer);
-playerMovementController.walkSpeed = 
-playerMovementController.startWalkSpeed*math.remap(10,7, 1,0, pukeTimer);
-playerMovementController.lookSpeed = 
-playerMovementController.startLookSpeed*math.remap(10,7, 1,0, pukeTimer);
+        speedModifier= math.remap(7,10,0,1, pukeTimer);
+
     }
     if(pukeTimer > 6 && pukeTimer < 7){
 puke.Play();
@@ -407,12 +404,8 @@ if(!pukeSound.isPlaying){
     }
 
 if(pukeTimer > 3  && pukeTimer < 6){
-playerMovementController.runSpeed = 
-playerMovementController.startRunSpeed*math.remap(6,3, 0,1, pukeTimer);
-playerMovementController.walkSpeed = 
-playerMovementController.startWalkSpeed*math.remap(6,3, 0,1, pukeTimer);
-playerMovementController.lookSpeed = 
-playerMovementController.startLookSpeed*math.remap(6,3, 0,1, pukeTimer);
+    speedModifier = math.remap(3,6,1,0, pukeTimer);
+
     }
 
 

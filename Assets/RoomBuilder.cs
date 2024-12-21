@@ -54,21 +54,42 @@ public class RoomBuilder : MonoBehaviour
     // Start is called before the first frame update
     
     public void buildMap(){
+        StartCoroutine(buildMapCouroutine());
+       
+    }
+
+    IEnumerator buildMapCouroutine(){
+         
+       
         if(mapBuilt == false){
             mapBuilt = true;
+        PauseMenu.loadingScreen.SetActive(true);
+         yield return new WaitForSeconds(0.1f);
+         PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Start...";
+         yield return new WaitForSeconds(0.1f);
           //place start room at origin
         previousRoomObject = Instantiate(startRoom, startRoom.transform.position, quaternion.identity);
         rooms.Add(previousRoomObject);
        //dosen't check for collision
        //if collision remove door and wall off, choose another doorway
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Main Path...";
+        yield return new WaitForSeconds(0.1f);
         generateMainBatch();
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Exit...";
+        yield return new WaitForSeconds(0.1f);
         generateEndRoom();
-        
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Branches...";
+        yield return new WaitForSeconds(0.1f);
 
         generateBranches();
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Essential Rooms...";
+        yield return new WaitForSeconds(0.1f);
         generateEssential();
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Finishing Room Gen...";
+        yield return new WaitForSeconds(0.1f);
         generatedEndCaps();
-        
+        PauseMenu.progressText.GetComponent<TMPro.TextMeshProUGUI>().text = "Generating Hallways...";
+        yield return new WaitForSeconds(0.5f);
 
 
        
@@ -84,7 +105,9 @@ public class RoomBuilder : MonoBehaviour
         }
        
 
-    }}
+    }
+    PauseMenu.loadingScreen.SetActive(false);
+    }
 
     // Update is called once per frame
     //takes a door from the previous room and generates a new room of it x times then places the end room

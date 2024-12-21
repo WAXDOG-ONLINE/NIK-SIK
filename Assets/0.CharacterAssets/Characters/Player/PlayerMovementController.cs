@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : MonoBehaviour
@@ -23,7 +24,13 @@ public class PlayerMovementController : MonoBehaviour
     public float startRunSpeed = 12f;
     public float startLookSpeed = 2f;
     public float jumpPower = 7f;
+
+    public float airControlBlend = 0;
     public float gravity = 10f;
+
+    public float pukeSpeedModifier = 1;
+
+    public float goopSpeedModifier = 1;
     public AudioSource walkSound;
     public AudioSource runSound;
 
@@ -48,10 +55,21 @@ public class PlayerMovementController : MonoBehaviour
  
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0; // Modify this line
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0; // Modify this line
         float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+        if (characterController.isGrounded)
+        {
+            moveDirection = ((forward * curSpeedX) + (right * curSpeedY))*pukeSpeedModifier*goopSpeedModifier;
+        }
+        else
+        {
+            // Blend input direction with current velocity to add a small amount of control
+            Vector3 inputDirection = ((forward * curSpeedX) + (right * curSpeedY));
+            moveDirection = Vector3.Lerp(moveDirection, inputDirection, airControlBlend); 
+        }
  
        if(characterController.isGrounded && characterController.velocity.magnitude > 0 ){
         if(isRunning){
@@ -76,7 +94,7 @@ public class PlayerMovementController : MonoBehaviour
       
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
-            moveDirection.y = jumpPower;
+            moveDirection.y = jumpPower*goopSpeedModifier;
         }
         else
         {
