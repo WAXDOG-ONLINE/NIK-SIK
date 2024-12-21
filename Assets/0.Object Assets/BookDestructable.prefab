@@ -758,7 +758,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1256,6 +1256,7 @@ MonoBehaviour:
   destructionSound: {fileID: 395156287531238143}
   pitchMin: 1
   pitchMax: 1.7
+  despawnTime: 10
 --- !u!135 &9181579519468892387
 SphereCollider:
   m_ObjectHideFlags: 0
