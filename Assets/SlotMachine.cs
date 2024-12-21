@@ -9,6 +9,11 @@ public class SlotMachine : MonoBehaviour
     public GameObject wheel2;
     public GameObject wheel3;
 
+    public AudioSource casinoSounds;
+    public AudioClip spinSound;
+    public AudioClip winSound;
+    public AudioClip loseSound;
+
     int spinIndex1 = 0;
     int spinIndex2 =0;
     int spinIndex3 = 0;
@@ -43,9 +48,12 @@ public class SlotMachine : MonoBehaviour
     
     IEnumerator playGame(){
         playing = true;
-            int spin1 = Random.Range(10, 20);
-            int spin2 = Random.Range(10, 10);
-             int spin3 = Random.Range(10, 29);
+        casinoSounds.clip = spinSound;
+        casinoSounds.Play();
+        casinoSounds.loop = true;
+            int spin1 = Random.Range(15, 45);
+            int spin2 = Random.Range(15, 45);
+             int spin3 = Random.Range(15, 45);
              spinIndex1 = (spinIndex1 + spin1) % 8;
             spinIndex2 = (spinIndex2 + spin2) % 8;
              spinIndex3 = (spinIndex3 + spin3) % 8;
@@ -56,8 +64,16 @@ public class SlotMachine : MonoBehaviour
         yield return new WaitForSeconds(greatestSpin * .15f);
         Debug.Log("Over");
         if(spinIndex1 == spinIndex2 && spinIndex2 == spinIndex3){
+            casinoSounds.clip = winSound;
+            casinoSounds.Play();
+            casinoSounds.loop = false;
             Debug.Log("You Win!");
             
+    }else{
+        casinoSounds.clip = loseSound;
+        casinoSounds.Play();
+        casinoSounds.loop = false;
+        Debug.Log("You Lose!");
     }
     playing = false;
   
