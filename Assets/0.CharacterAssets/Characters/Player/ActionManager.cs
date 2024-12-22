@@ -185,11 +185,11 @@ public class ActionManager : MonoBehaviour
         // Handle inspection
         if (Input.GetButton("Inspect"))
         {
-            animator.SetBool("isInspecting", true);
+            //animator.SetBool("isInspecting", true);
         }
         else
         {
-            animator.SetBool("isInspecting", false);
+            //animator.SetBool("isInspecting", false);
         }
 
         // Handle item drop
@@ -546,8 +546,11 @@ public class ActionManager : MonoBehaviour
                     if(!vapeSound.isPlaying){
                         vapeSound.Play();
                     }
-                    
-                    animator.SetBool("isChuffing?", true);
+                    if(isLeftHand){
+                    animator.SetBool("IsVapingLeft?", true);
+                    }else{
+                    animator.SetBool("IsVapingRight?", true);
+                    }
                     
                     device.BatteryDrain();
                     pod.JuiceDrain();
@@ -577,7 +580,12 @@ public class ActionManager : MonoBehaviour
           
              isVaping = false;
                     vapeSound.Stop();
-                    animator.SetBool("isChuffing?", false);
+                    if(isLeftHand){
+                    animator.SetBool("IsVapingLeft?", false);
+                    }else{
+                    animator.SetBool("IsVapingRight?", false);
+                    
+                    }
                     smokeTimer = 2;
 
 
