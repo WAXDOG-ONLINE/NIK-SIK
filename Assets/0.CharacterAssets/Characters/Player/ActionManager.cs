@@ -463,6 +463,11 @@ public class ActionManager : MonoBehaviour
             }
             if (beer.GetComponent<Drink>().liquidPercentage > 0 && isLeftHand? Input.GetButton("Fire1"): Input.GetButton("Fire2"))
             {
+                if(isLeftHand){
+                    animator.SetBool("IsVapingLeft?", true);
+                    }else{
+                    animator.SetBool("IsVapingRight?", true);
+                    }
                 beer.GetComponent<Drink>().drainLiquid();
                 if (sickness > 0)
                 {
@@ -473,6 +478,11 @@ public class ActionManager : MonoBehaviour
             yield return null;
             
         }
+        if(isLeftHand){
+                    animator.SetBool("IsVapingLeft?", false);
+                    }else{
+                    animator.SetBool("IsVapingRight?", false);
+                    }
 
     }
 
@@ -795,27 +805,84 @@ public class ActionManager : MonoBehaviour
         setChirality(isLeftHand);
         if (activeItem1 != emptyItem)
         {
-            if(isLeftHand){
-                isPerformingActionLeft = true;
-            }else{
-                isPerformingActionRight = true;
-            }
+            setActiveAction(isLeftHand);
+            setActionOveride(isLeftHand);
+            StartCoroutine(dropItem(isLeftHand,activeItem1));
 
-            if (!activeItem1.GetComponent<ItemInfo>().isOnGround)
+            
+        }
+    }
+
+    IEnumerator dropItem(bool isLeftHand,ItemInfo activeItem1){
+        float throwTimer = 0;
+        while(isLeftHand? Input.GetButton("DropLeft") : Input.GetButton("DropRight")){
+           setActionOveride(isLeftHand);
+           if(isLeftHand){
+            animator.SetBool("IsDropLeft", true);
+           }else{
+            animator.SetBool("IsDropRight", true);
+           }
+           throwTimer += Time.deltaTime;
+           
+
+            yield return null;
+        }
+
+
+        //rescale item
+        if (!activeItem1.GetComponent<ItemInfo>().isOnGround)
             {
                 activeItem1.transform.localScale = activeItem1.transform.localScale * 2f;
             }
+
+             if (activeItem1.isHuntable)
+            {
+                activeItem1.gameObject.layer = LayerMask.NameToLayer("roaches");
+            }
+            
+            //apply throw velocity
+            if(throwTimer>1.67){
+                if(isLeftHand){
+            animator.SetBool("IsDropLeft", false);
+            animator.SetBool("IsThrowLeft",true);
+            
+           }else{
+            animator.SetBool("IsDropRight", false);
+            animator.SetBool("IsThrowRight",true);
+           }
+           yield return new WaitForSeconds(0.05f);
             activeItem1.GetComponent<ItemInfo>().isOnGround = true;
             activeItem1.GetComponent<Rigidbody>().isKinematic = false;
             activeItem1.GetComponent<Rigidbody>().useGravity = true;
             activeItem1.GetComponent<BoxCollider>().isTrigger = false;
+             activeItem1.transform.parent = null;
+            activeItem1.GetComponent<Rigidbody>().velocity += Camera.main.transform.forward * 10 ;
+            if(isLeftHand){
+            animator.SetBool("IsThrowLeft", false);
+           
+            
+           }else{
+            animator.SetBool("IsThrowRight", false);
+            
+           }   
+            }else{
+            if(isLeftHand){
+            animator.SetBool("IsDropLeft", false);
+           
+            
+           }else{
+            animator.SetBool("IsDropRight", false);
+            
+           }        
+             activeItem1.GetComponent<ItemInfo>().isOnGround = true;
+            activeItem1.GetComponent<Rigidbody>().isKinematic = false;
+            activeItem1.GetComponent<Rigidbody>().useGravity = true;
+            activeItem1.GetComponent<BoxCollider>().isTrigger = false;
+             activeItem1.transform.parent = null;
+    }
+           
 
-            if (activeItem1.isHuntable)
-            {
-                activeItem1.gameObject.layer = LayerMask.NameToLayer("roaches");
-            }
-
-            activeItem1.transform.parent = null;
+           
 
             if (isLeftHand)
             {
@@ -825,7 +892,11 @@ public class ActionManager : MonoBehaviour
             {
                 itemRightHand = emptyItem;
             }
-        }
+        releaseActionOveride(isLeftHand);
+        //drop the item
+         
+
+
     }
 
     private void tryPlaceCharger(bool isLeftHand)
