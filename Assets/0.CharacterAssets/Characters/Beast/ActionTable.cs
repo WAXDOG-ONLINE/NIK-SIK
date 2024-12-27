@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class ActionTable : MonoBehaviour
 {
+    //
     [Header("drops")]
     [SerializeField]
     private ActionEvent[] ActionEvents;

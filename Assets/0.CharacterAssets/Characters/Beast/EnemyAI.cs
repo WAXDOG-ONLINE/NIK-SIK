@@ -132,7 +132,7 @@ public class EnemyAI : MonoBehaviour //don't forget to change the script name if
         if(distanceToPlayer < damageDistance){
             //attack
             if(!attackCoolingDown){
-            player.GetComponent<ActionManager>().health += -25;
+            player.GetComponent<ActionManager>().health += -1;
             StartCoroutine(attackCoolDown());
             }
         }
