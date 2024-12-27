@@ -81,6 +81,8 @@ public class ActionManager : MonoBehaviour
 
     private float smokeTimer = 0;
 
+
+
     [Header("PlayerStats")]
     public float health = 6;
     public float sickness = 0;
@@ -90,6 +92,8 @@ public class ActionManager : MonoBehaviour
 
     [SerializeField]
     private float sicknessMultiplier = 1f;
+    [SerializeField]
+    private float cravingMultiplier = 1f;
 
     [SerializeField]
     private ItemInfo emptyItem;
@@ -144,6 +148,10 @@ public class ActionManager : MonoBehaviour
         // Handle smoke timer
         HandleSmokeTimer();
 
+        // Handle player movement Actions
+        HandlePlayerMovementActions();
+
+
        
 
        
@@ -183,7 +191,7 @@ public class ActionManager : MonoBehaviour
         {
             if (craving < 100)
             {
-                craving += 1 * Time.deltaTime;
+                craving += cravingMultiplier * Time.deltaTime;
             }
         }
         fullScreenEffectController.setAnxietyIntensity(craving);
@@ -247,6 +255,36 @@ public class ActionManager : MonoBehaviour
        
 
         
+    }
+
+    private void HandlePlayerMovementActions()
+    {
+
+      // CHARGED DASH
+
+      /*
+      The dash mechanic works by holding down the dash button , which charges it, and then on release it activates the dash.
+      The dash will move the player in the direction the players camera is facing, giving velocity to the player.
+      The dash has some initial velocity , and then depending on how long the player has charged the dash we will add some additional velocity.
+      
+      activation -> Movement1 : f
+      */ 
+
+      
+
+      // Charged dash
+      if (Input.GetButton("Movement1")) {
+          Debug.Log("Dash button down");
+          playerMovementController.isChargingDash = true;
+      }
+      // on release
+      if (Input.GetButtonUp("Movement1")) {
+          Debug.Log("Dash button released");
+          playerMovementController.queueDash = true;
+          playerMovementController.isChargingDash = false;
+      }
+      // edge case: button is up but not released
+
     }
 
     private void PerformComboActions()
@@ -550,9 +588,10 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+
     IEnumerator continueVaping(DeviceItem device,PodItem pod,bool isLeftHand){
         
-            while(!isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){ 
+            while(!isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){
                 
 
                  isVaping = true;
@@ -599,19 +638,25 @@ public class ActionManager : MonoBehaviour
 
                 
             }
-          
-             isVaping = false;
-                    vapeSound.Stop();
-                    if(isLeftHand){
-                    animator.SetBool("IsVapingLeft?", false);
-                    }else{
-                    animator.SetBool("IsVapingRight?", false);
-                    
-                    }
-                    smokeTimer = 2;
+
+            //Vaping Action Ends
 
 
-       
+
+            isVaping = false;
+            vapeSound.Stop();
+            if(isLeftHand){
+              animator.SetBool("IsVapingLeft?", false);
+            }else{
+              animator.SetBool("IsVapingRight?", false);
+            }
+            smokeTimer = 2;
+
+
+
+
+
+
     }
 
 
