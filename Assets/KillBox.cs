@@ -13,7 +13,14 @@ public class KillBox : MonoBehaviour
     {
        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
        {
-           other.gameObject.GetComponent<ActionManager>().health += -110;
+          other.gameObject.GetComponent<CharacterController>().enabled = false;
+         other.gameObject.transform.position = respawnPoint.transform.position;
+        other.gameObject.GetComponent<ActionManager>().takeDamage(1);
+            other.gameObject.GetComponent<CharacterController>().enabled = true;
+         
        }
+
+       //Teleport player
+      
     }
 }

@@ -117,8 +117,7 @@ public class ActionManager : MonoBehaviour
         // Check player health
         if (health < 0)
         {
-            Application.Quit();
-            Time.timeScale = 0;
+            
         }
 
 
@@ -1197,7 +1196,7 @@ public class ActionManager : MonoBehaviour
             if (!pukeSound.isPlaying)
             {
                 pukeSound.Play();
-                health -= 10;
+                health -= 1;
             }
         }
 
