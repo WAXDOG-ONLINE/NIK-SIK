@@ -26,6 +26,8 @@ public class PlayerMovementController : MonoBehaviour
     public float currentDashCharge = 0;
     public bool isChargingDash = false;
     public bool queueDash = false;
+
+    public bool queueDashCharger = false;
     private float dashTimer = 0;
 
     CharacterController characterController;
@@ -47,6 +49,8 @@ public class PlayerMovementController : MonoBehaviour
     public float pukeSpeedModifier = 1;
 
     public float goopSpeedModifier = 1;
+
+    private Vector3 dashDirection = new Vector3(0,0,0);
     public AudioSource walkSound;
     public AudioSource runSound;
 
@@ -123,11 +127,25 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         // DASH
+        
+
+        if(queueDashCharger){
+            currentDashCharge = 0;
+            queueDashCharger = false;
+            
+           
+        }
         if (isChargingDash) { ChargeDash(); }
-        if (queueDash) { dashTimer += dashTime; queueDash = false; }
+        if (queueDash) { 
+            Vector3 curDashDir = forward;
+            dashDirection = curDashDir;
+            dashTimer += dashTime;
+            queueDash = false;
+        }
         dashTimer -= Time.deltaTime;
         dashTimer = Mathf.Max(dashTimer, 0);
         if (dashTimer > 0) { Dash(); }
+       
 
         
         characterController.Move(moveDirection * Time.deltaTime);
@@ -166,10 +184,9 @@ public class PlayerMovementController : MonoBehaviour
         */
         float dashSpeed = initialDashStrength + currentDashCharge;
         Debug.Log("DASHED");
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
 
-        Vector3 dashVelocity = (forward * dashSpeed);
+
+        Vector3 dashVelocity = dashDirection * dashSpeed;
         Vector3 dashImpulse = dashVelocity * Time.deltaTime;
         characterController.Move(dashImpulse);
     }
