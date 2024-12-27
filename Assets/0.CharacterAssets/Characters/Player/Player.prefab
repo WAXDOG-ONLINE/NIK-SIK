@@ -396,6 +396,7 @@ MonoBehaviour:
   craving: 0
   pickUpRange: 100
   sicknessMultiplier: 2
+  cravingMultiplier: 1
   emptyItem: {fileID: 5517989053845868629}
   statusBars: {fileID: 0}
   cashBalace: 50
@@ -415,9 +416,45 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 70
   canMove: 1
+  initialDashStrength: 50
+  maxChargeDashStrength: 500
+  dashChargeTime: 1
+  chargeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dashTime: 1
+  maxDashes: 1
+  currentDashChargeTime: 0
+  currentDashCharge: 0
+  isChargingDash: 0
+  queueDash: 0
+  queueDashCharger: 0
   playerCamera: {fileID: 2211693490084269583}
   walkSpeed: 4
   runSpeed: 6
+  groundFriction: 10
+  airFriction: 20
   startWalkSpeed: 3
   startRunSpeed: 6
   startLookSpeed: 2

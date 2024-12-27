@@ -17,15 +17,24 @@ public class PlayerMovementController : MonoBehaviour
     private float initialDashStrength = 10f;
     [SerializeField]
     private float maxChargeDashStrength = 15f;
-    [Tooltip("charge rate per second")]
+    [Tooltip("second")]
     [SerializeField]
-    private float dashChargeRate = 1f; // charge per second
+    private float dashChargeTime = 1.0f;
+    // charge curve
+    [SerializeField]
+    private AnimationCurve chargeCurve = AnimationCurve.Linear(0, 0, 1, 1);
     [SerializeField]
     private float dashTime = 0.25f;
+    [SerializeField]
+    private int maxDashes = 1; // max dashs while in air
+    private int dashCount = 0;
     // private float currentDashCharge = 0;
-    public float currentDashCharge = 0;
+    public float currentDashChargeTime = 0.0f;
+    public float currentDashCharge = 0.0f;
     public bool isChargingDash = false;
     public bool queueDash = false;
+    private float initCamFov;
+
 
     public bool queueDashCharger = false;
     private float dashTimer = 0;
@@ -38,6 +47,8 @@ public class PlayerMovementController : MonoBehaviour
 
     public float walkSpeed;
     public float runSpeed;
+    public float groundFriction = 1.0f;
+    public float airFriction = 0.5f;
     public float startWalkSpeed = 6f;
     public float startRunSpeed = 12f;
     public float startLookSpeed = 2f;
@@ -63,6 +74,7 @@ public class PlayerMovementController : MonoBehaviour
         walkSpeed = startWalkSpeed;
         runSpeed = startRunSpeed;
         lookSpeed = startLookSpeed;
+        initCamFov = playerCamera.fieldOfView;
         
     }
 
@@ -72,6 +84,8 @@ public class PlayerMovementController : MonoBehaviour
          
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
+
+        
  
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
@@ -127,28 +141,80 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         // DASH
-        
+        if (characterController.isGrounded) { dashCount = 0; }
 
+        bool canDash = dashCount < maxDashes && !(dashTimer > 0);
+        
         if(queueDashCharger){
-            currentDashCharge = 0;
-            queueDashCharger = false;
-            
-           
+            currentDashChargeTime = 0;
+            queueDashCharger = false; 
         }
-        if (isChargingDash) { ChargeDash(); }
-        if (queueDash) { 
-            Vector3 curDashDir = forward;
+
+
+
+
+
+        if (isChargingDash && canDash) { ChargeDash(); }
+        Vector3 dashForce = Vector3.zero;
+        float dashSpeed = initialDashStrength + currentDashCharge;
+        if (queueDash && !canDash) { queueDash = false; }
+        if (queueDash && canDash) { 
+            Vector3 curDashDir = moveDirection.normalized;
+            // if the player not moving left or right, dash in the direction the player is facing
+            if (Input.GetAxis("Vertical") == 0 && Input.GetAxis("Horizontal") == 0) { curDashDir = transform.forward; }
+
+
+
+            Debug.Log("DASHED");
+            // set vertical component to 0
+            curDashDir.y = 0.0f;
             dashDirection = curDashDir;
             dashTimer += dashTime;
+            dashCount++;
+            dashForce = dashDirection * dashSpeed;
             queueDash = false;
-        }
+            playerCamera.fieldOfView = initCamFov;
+        } 
         dashTimer -= Time.deltaTime;
         dashTimer = Mathf.Max(dashTimer, 0);
-        if (dashTimer > 0) { Dash(); }
-       
+        // if (dashTimer > 0) { 
+        //   Debug.Log("DASHING");
+        //   dashForce = dashDirection * dashSpeed; 
+        // }
 
+
+        Vector3 prevFrameVelocity = characterController.velocity;
+        Vector3 playerMoveForce = moveDirection;
+
+        //FRICTION
+        Vector3 frictionForce = Vector3.zero;
+        float isGrounded = characterController.isGrounded ? 1.0f : 0.0f;
+        float floorDrag = isGrounded * groundFriction;
+        float airDrag = airFriction;
+        float frictionCoeff = floorDrag + airDrag;
+        frictionCoeff *= Time.deltaTime; // Scale by time to make it frame rate independent
+        frictionCoeff = Mathf.Min(frictionCoeff, 1.0f); // Clamp to 1.0f, so we dont ever move backwards, we only want to stop movement, not reverse it
+        frictionForce = -prevFrameVelocity * frictionCoeff;
+
+        //Net Force
+        Vector3 netForce = Vector3.zero
+         + playerMoveForce 
+         + dashForce 
+         + frictionForce;
         
-        characterController.Move(moveDirection * Time.deltaTime);
+        float mass = 1.0f;
+        Vector3 acceleration = netForce / mass;
+        Vector3 newVelocity = prevFrameVelocity + acceleration;
+
+        // DISPLACEMENT INTEGRATION
+        /*
+        To get displacement we entegrate the velocity over time
+        inbetween the previous frame and the current frame, we dont know the velocity is exactly
+        so we assume a linear interpolation between the previous frame velocity and the new velocity
+        the integration of this linear interpolation can be appoximated by taking the midpoint of the two velocities
+        */
+        Vector3 displacement = (prevFrameVelocity + newVelocity) * 0.5f * Time.deltaTime; // midpoint integration
+        characterController.Move(displacement);
  
         if (canMove)
         {
@@ -168,27 +234,25 @@ public class PlayerMovementController : MonoBehaviour
         Charges the dash by increasing the currentDashCharge by dashChargeRate per second
         */
         Debug.Log("CHARGING DASH");
-        currentDashCharge += dashChargeRate * Time.deltaTime;
-        currentDashCharge = Mathf.Min(currentDashCharge, maxChargeDashStrength);
+        currentDashChargeTime += Time.deltaTime;
+        currentDashChargeTime = Mathf.Min(currentDashChargeTime, dashChargeTime);
+        float chargePercent = currentDashChargeTime / (dashChargeTime + 0.0001f); // avoid divide by zero
 
-    }
+        //modify the fov based on the charge percent
+        float minFov = initCamFov;
+        float addedFov = 20;
+        float maxFov = initCamFov + addedFov;
+        float fov = chargeCurve.Evaluate(chargePercent) * (maxFov - minFov) + minFov;
+        playerCamera.fieldOfView = fov;
 
-
-    public void Dash(){
-        /*
-        DASH:
-        Moves the player in the direction they are facing at a speed of dashSpeed
-
-        add velocity in the look direction to the player
-
-        */
-        float dashSpeed = initialDashStrength + currentDashCharge;
-        Debug.Log("DASHED");
+        float chargeRange = maxChargeDashStrength - initialDashStrength;
+        currentDashCharge = chargeCurve.Evaluate(chargePercent) * chargeRange + initialDashStrength;
 
 
-        Vector3 dashVelocity = dashDirection * dashSpeed;
-        Vector3 dashImpulse = dashVelocity * Time.deltaTime;
-        characterController.Move(dashImpulse);
+
+
+
+
     }
 
 
