@@ -276,6 +276,9 @@ public class ActionManager : MonoBehaviour
           Debug.Log("Dash button down");
           playerMovementController.isChargingDash = true;
       }
+      if(Input.GetButtonDown("Movement1")){
+         playerMovementController.queueDashCharger = true;
+      }
       // on release
       if (Input.GetButtonUp("Movement1")) {
           Debug.Log("Dash button released");
@@ -589,6 +592,24 @@ public class ActionManager : MonoBehaviour
 
 
     IEnumerator continueVaping(DeviceItem device,PodItem pod,bool isLeftHand){
+
+            // if (Input.GetButton("Movement1")) {
+            //     Debug.Log("Dash button down");
+            //     playerMovementController.isChargingDash = true;
+            // }
+            // if(Input.GetButtonDown("Movement1")){
+            //     playerMovementController.queueDashCharger = true;
+            // }
+            // // on release
+            // if (Input.GetButtonUp("Movement1")) {
+            //     Debug.Log("Dash button released");
+            //     playerMovementController.queueDash = true;
+            //     playerMovementController.isChargingDash = false;
+            // }
+
+             playerMovementController.queueDashCharger = true;
+
+
         
             while(!isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){
                 
@@ -603,6 +624,8 @@ public class ActionManager : MonoBehaviour
                 }
                  if (device.batteryPercentage > 0 && pod.juicePercentage > 0)
                 {
+                    playerMovementController.isChargingDash = true;
+
                     if(!vapeSound.isPlaying){
                         vapeSound.Play();
                     }
@@ -639,6 +662,9 @@ public class ActionManager : MonoBehaviour
             }
 
             //Vaping Action Ends
+
+            playerMovementController.queueDash = true;
+            playerMovementController.isChargingDash = false;
 
 
 
