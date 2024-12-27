@@ -82,7 +82,7 @@ public class ActionManager : MonoBehaviour
     private float smokeTimer = 0;
 
     [Header("PlayerStats")]
-    public float health = 100;
+    public float health = 6;
     public float sickness = 0;
     public float craving = 0;
     [SerializeField]
@@ -120,8 +120,11 @@ public class ActionManager : MonoBehaviour
             Application.Quit();
             Time.timeScale = 0;
         }
+
+
         ResetActions();
         // Update UI
+        
         UpdateUI();
 
         // Handle inventory
@@ -147,7 +150,16 @@ public class ActionManager : MonoBehaviour
     }
 
   
+    public void takeDamage(float damage){
+        if(health >= 0){
+        health -= damage;
+        }else{
+            //end game
+        }
 
+
+
+    }
     private void HandleInventory()
     {
         if (Input.GetButton("Inventory"))

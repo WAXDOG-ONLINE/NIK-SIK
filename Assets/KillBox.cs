@@ -7,7 +7,7 @@ public class KillBox : MonoBehaviour
 {
     // Start is called before the first frame update
     
-
+    public GameObject respawnPoint;
     // Update is called once per frame
     public void OnTriggerEnter(Collider other)
     {

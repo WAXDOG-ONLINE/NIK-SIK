@@ -9,16 +9,7 @@ public class Inventory : MonoBehaviour
 private quaternion lockedRot = new quaternion(0,0,0,0);
     private bool inventoryRetrieved; 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
 
 
     public void retrieveInventroy(){
