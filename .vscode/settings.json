@@ -1,4 +1,20 @@
 {
+    "editor.formatOnSave": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+
+    "editorconfig.enable": true,
+
+    "[csharp]": {
+        "editor.defaultFormatter": "ms-dotnettools.csharp",
+        "editor.formatOnSave": true
+    },
+
+    "editor.formatOnSaveTimeout": 2000,
+
+    "csharp.format.enable": true,
+    "csharp.format.organizeImports": true,
+
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true,
@@ -51,5 +67,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "NIK-SIK.sln"
+    "dotnet.defaultSolution": "NIK-SIK.sln",
 }

@@ -14,8 +14,7 @@ using UnityEngine.UI;
 using UnityEngine.XR;
 
 [RequireComponent(typeof(CharacterController))]
-public class ActionManager : MonoBehaviour
-{
+public class ActionManager : MonoBehaviour {
     #region Variables
     public PlayerMovementController playerMovementController;
     public FullScreenEffectController fullScreenEffectController;
@@ -73,7 +72,7 @@ public class ActionManager : MonoBehaviour
     private Light inventoryLight;
 
     [Header("ActionManagement")]
-    
+
 
     private bool isPerformingComboAction = false;
 
@@ -103,7 +102,7 @@ public class ActionManager : MonoBehaviour
 
     public float cashBalace = 0;
 
-    
+
     [HideInInspector]
     public bool isPerformingLongAction = false;
     private float pukeTimer = 15;
@@ -116,18 +115,16 @@ public class ActionManager : MonoBehaviour
     private bool isPerformingOverideLeft = false;
     private bool isPerformingOverideRight = false;
     #endregion
-    void Update()
-    {
+    void Update() {
         // Check player health
-        if (health < 0)
-        {
-            
+        if (health < 0) {
+
         }
 
 
         ResetActions();
         // Update UI
-        
+
         UpdateUI();
 
         // Handle inventory
@@ -142,7 +139,7 @@ public class ActionManager : MonoBehaviour
         HandlePlayerActions();
 
         // Reset actions if no buttons are pressed
-        
+
 
         // Handle smoke timer
         HandleSmokeTimer();
@@ -151,45 +148,41 @@ public class ActionManager : MonoBehaviour
         HandlePlayerMovementActions();
 
 
-       
 
-       
+
+
     }
 
-  
-    public void takeDamage(float damage){
-        if(health >= 0){
-        health -= damage;
-        }else{
+
+    public void takeDamage(float damage) {
+        if (health >= 0) {
+            health -= damage;
+        }
+        else {
             //end game
         }
 
 
 
     }
-    private void HandleInventory()
-    {
-        if (Input.GetButton("Inventory"))
-        {
+    private void HandleInventory() {
+        if (Input.GetButton("Inventory")) {
             inventory.retrieveInventroy();
             inventoryOpen = true;
             inventoryLight.enabled = true;
         }
-        else
-        {
+        else {
             inventory.unRetrieveInventory();
             inventoryOpen = false;
             inventoryLight.enabled = false;
         }
-        
+
         tryPlaceInventoryLeft();
         tryPlaceInventoryRight();
     }
-    private void HandlePlayerStats(){
-        if (!isVaping)
-        {
-            if (craving < 100)
-            {
+    private void HandlePlayerStats() {
+        if (!isVaping) {
+            if (craving < 100) {
                 craving += cravingMultiplier * Time.deltaTime;
             }
         }
@@ -197,28 +190,23 @@ public class ActionManager : MonoBehaviour
 
 
     }
-    private void HandlePlayerActions()
-    {
-       
+    private void HandlePlayerActions() {
+
 
         // Handle inspection
-        if (Input.GetButton("Inspect"))
-        {
+        if (Input.GetButton("Inspect")) {
             //animator.SetBool("isInspecting", true);
         }
-        else
-        {
+        else {
             //animator.SetBool("isInspecting", false);
         }
 
         // Handle item drop
-        if (Input.GetButton("DropLeft") && !isPerformingActionLeft && !isPerformingOverideLeft)
-        {
+        if (Input.GetButton("DropLeft") && !isPerformingActionLeft && !isPerformingOverideLeft) {
             tryDropItem(true);
         }
 
-        if (Input.GetButton("DropRight") && !isPerformingActionRight && !isPerformingOverideRight)
-        {
+        if (Input.GetButton("DropRight") && !isPerformingActionRight && !isPerformingOverideRight) {
             tryDropItem(false);
         }
 
@@ -228,70 +216,67 @@ public class ActionManager : MonoBehaviour
 
 
         // Handle combo actions
-        if (Input.GetButton("Fire1") && Input.GetButton("Fire2") )
-        {
-           
+        if (Input.GetButton("Fire1") && Input.GetButton("Fire2")) {
+
             //cancle any one handed actions
 
             PerformComboActions();
         }
-        
+
 
 
         //handle single hand actions
-        if(Input.GetButton("Fire1") && !isPerformingActionLeft && !isPerformingOverideLeft && !isPerformingComboAction && !attemptingInventoryPlacementLeft){
+        if (Input.GetButton("Fire1") && !isPerformingActionLeft && !isPerformingOverideLeft && !isPerformingComboAction && !attemptingInventoryPlacementLeft) {
             HandleItemUsage(true);
             tryInteract(true);
         }
 
-        if(Input.GetButton("Fire2") && !isPerformingActionRight && !isPerformingOverideRight && !isPerformingComboAction && !attemptingInventoryPlacementRight){
+        if (Input.GetButton("Fire2") && !isPerformingActionRight && !isPerformingOverideRight && !isPerformingComboAction && !attemptingInventoryPlacementRight) {
             HandleItemUsage(false);
             tryInteract(false);
         }
-     
 
-    
-       
 
-        
-    }
 
-    private void HandlePlayerMovementActions()
-    {
 
-      // CHARGED DASH
 
-      /*
-      The dash mechanic works by holding down the dash button , which charges it, and then on release it activates the dash.
-      The dash will move the player in the direction the players camera is facing, giving velocity to the player.
-      The dash has some initial velocity , and then depending on how long the player has charged the dash we will add some additional velocity.
-      
-      activation -> Movement1 : f
-      */ 
-
-      
-
-      // Charged dash
-      if (Input.GetButton("Movement1")) {
-          Debug.Log("Dash button down");
-          playerMovementController.isChargingDash = true;
-      }
-      if(Input.GetButtonDown("Movement1")){
-         playerMovementController.queueDashCharger = true;
-      }
-      // on release
-      if (Input.GetButtonUp("Movement1")) {
-          Debug.Log("Dash button released");
-          playerMovementController.queueDash = true;
-          playerMovementController.isChargingDash = false;
-      }
-      // edge case: button is up but not released
 
     }
 
-    private void PerformComboActions()
-    {
-        
+    private void HandlePlayerMovementActions() {
+
+        // CHARGED DASH
+
+        /*
+        The dash mechanic works by holding down the dash button , which charges it, and then on release it activates the dash.
+        The dash will move the player in the direction the players camera is facing, giving velocity to the player.
+        The dash has some initial velocity , and then depending on how long the player has charged the dash we will add some additional velocity.
+
+        activation -> Movement1 : f
+        */
+
+
+
+        // Charged dash
+        if (Input.GetButton("Movement1")) {
+            Debug.Log("Dash button down");
+            playerMovementController.isChargingDash = true;
+        }
+        if (Input.GetButtonDown("Movement1")) {
+            playerMovementController.queueDashCharger = true;
+        }
+        // on release
+        if (Input.GetButtonUp("Movement1")) {
+            Debug.Log("Dash button released");
+            playerMovementController.queueDash = true;
+            playerMovementController.isChargingDash = false;
+        }
+        // edge case: button is up but not released
+
+    }
+
+    private void PerformComboActions() {
+
         tryDettachPod(false);
         tryDettachPod(true);
         tryAttachPod(false);
@@ -302,16 +287,15 @@ public class ActionManager : MonoBehaviour
         tryDepositCig(false);
         tryWithdrawlCig(true);
         tryWithdrawlCig(false);
-        
-        
+
+
     }
 
-    private void HandleItemUsage(bool isLeftHand)
-    {
+    private void HandleItemUsage(bool isLeftHand) {
         setChirality(isLeftHand);
         //each functions should check for sucessful action and set isPerformingAction to true if action is sucessful
-        
-        
+
+
         tryPlaceCharger(isLeftHand);
         tryPlaceKey(isLeftHand);
         tryVape(isLeftHand);
@@ -319,78 +303,73 @@ public class ActionManager : MonoBehaviour
         tryDrinkBeer(isLeftHand);
         trySmokeCig(isLeftHand);
         tryPickUp(isLeftHand);
-       
+
     }
     #region utilFunctions
-    private void ResetActions()
-    {
-        if(!Input.GetButton("Fire1") ){
+    private void ResetActions() {
+        if (!Input.GetButton("Fire1")) {
             isPerformingActionLeft = false;
         }
-        if(!Input.GetButton("Fire2")){
+        if (!Input.GetButton("Fire2")) {
             isPerformingActionRight = false;
         }
-        if (!Input.GetButton("Fire1") && !Input.GetButton("Fire2") && !isPerformingLongAction)
-        {
-          
+        if (!Input.GetButton("Fire1") && !Input.GetButton("Fire2") && !isPerformingLongAction) {
+
             isFillingPod = false;
 
-            
 
-           
+
+
         }
-        if(!Input.GetButton("Fire1") && !Input.GetButton("Fire2")){
+        if (!Input.GetButton("Fire1") && !Input.GetButton("Fire2")) {
             isPerformingComboAction = false;
         }
     }
 
-     public void setActiveAction(bool isLeftHand){
-        if(isLeftHand){
+    public void setActiveAction(bool isLeftHand) {
+        if (isLeftHand) {
             isPerformingActionLeft = true;
-    }else{
-        isPerformingActionRight = true;
-    }
+        }
+        else {
+            isPerformingActionRight = true;
+        }
     }
 
-    public void setActionOveride(bool isLeftHand){
-        if(isLeftHand){
+    public void setActionOveride(bool isLeftHand) {
+        if (isLeftHand) {
             isPerformingOverideLeft = true;
-        }else{
+        }
+        else {
             isPerformingOverideRight = true;
         }
     }
-    public void releaseActionOveride(bool isLeftHand){
-        if(isLeftHand){
+    public void releaseActionOveride(bool isLeftHand) {
+        if (isLeftHand) {
             isPerformingOverideLeft = false;
-        }else{
+        }
+        else {
             isPerformingOverideRight = false;
         }
     }
 
-    private void HandleSmokeTimer()
-    {
-        if (smokeTimer >= 0)
-        {
+    private void HandleSmokeTimer() {
+        if (smokeTimer >= 0) {
             smokeTimer -= Time.deltaTime;
         }
 
-        if (smokeTimer <= 0)
-        {
+        if (smokeTimer <= 0) {
             smoke.Stop();
         }
     }
-    
-    private void setChirality(bool isLeftHand)
-    {
-        if (isLeftHand)
-        {
+
+    private void setChirality(bool isLeftHand) {
+        if (isLeftHand) {
             activeHand1 = leftHand;
             activeItem1 = itemLeftHand;
             activeHand2 = rightHand;
             activeItem2 = itemRightHand;
         }
-        else
-        {
+        else {
             activeHand1 = rightHand;
             activeItem1 = itemRightHand;
             activeHand2 = leftHand;
@@ -399,63 +378,52 @@ public class ActionManager : MonoBehaviour
     }
     #endregion
     #region Interact Functions
-    public void tryInteract(bool isLeftHand)
-    {
-      
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
-                var selection = hit.transform.gameObject;
-                tryActivateButton(selection,isLeftHand);
-                tryOpenLocker(selection,isLeftHand);
-                trySellItems(selection,isLeftHand);
-                tryBuyVendingMachine(selection,isLeftHand);
-                tryPurchase(selection,isLeftHand);
-                tryPlaySlotMachine(selection,isLeftHand);
-            }
-        
-    }
-   
+    public void tryInteract(bool isLeftHand) {
 
-    public void tryActivateButton(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<GameButton>())
-        {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
+            var selection = hit.transform.gameObject;
+            tryActivateButton(selection, isLeftHand);
+            tryOpenLocker(selection, isLeftHand);
+            trySellItems(selection, isLeftHand);
+            tryBuyVendingMachine(selection, isLeftHand);
+            tryPurchase(selection, isLeftHand);
+            tryPlaySlotMachine(selection, isLeftHand);
+        }
+
+    }
+
+
+    public void tryActivateButton(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<GameButton>()) {
             setActiveAction(isLeftHand);
             selection.GetComponent<GameButton>().activate();
         }
     }
 
-    private void tryOpenLocker(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<LockerDoor>())
-        {
+    private void tryOpenLocker(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<LockerDoor>()) {
             setActiveAction(isLeftHand);
-            
+
             selection.GetComponent<LockerDoor>().openClose();
         }
     }
 
-    private void trySellItems(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<SellBin>())
-        {
-            
+    private void trySellItems(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<SellBin>()) {
+
             setActiveAction(isLeftHand);
             cashBalace += selection.GetComponent<SellBin>().totalValue;
             selection.GetComponent<SellBin>().SellItems();
         }
     }
 
-    private void tryBuyVendingMachine(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<VendingMachine>())
-        {
-            
-            
-            if (cashBalace >= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue * 1.5)
-            {
+    private void tryBuyVendingMachine(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<VendingMachine>()) {
+
+
+            if (cashBalace >= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue * 1.5) {
                 setActiveAction(isLeftHand);
                 cashBalace -= selection.GetComponent<VendingMachine>().itemForSale.GetComponent<ItemInfo>().sellValue;
                 selection.GetComponent<VendingMachine>().sellItem();
@@ -463,12 +431,9 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void tryPurchase(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<POS>())
-        {
-            if (cashBalace >= selection.GetComponent<POS>().price && !selection.GetComponent<POS>().sold)
-            {
+    private void tryPurchase(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<POS>()) {
+            if (cashBalace >= selection.GetComponent<POS>().price && !selection.GetComponent<POS>().sold) {
                 setActiveAction(isLeftHand);
                 cashBalace -= selection.GetComponent<POS>().price;
                 selection.GetComponent<POS>().Sell();
@@ -476,206 +441,191 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void tryPlaySlotMachine(GameObject selection,bool isLeftHand)
-    {
-        if (selection.GetComponent<SlotMachine>())
-        {
+    private void tryPlaySlotMachine(GameObject selection, bool isLeftHand) {
+        if (selection.GetComponent<SlotMachine>()) {
             setActiveAction(isLeftHand);
             selection.GetComponent<SlotMachine>().Spin(transform);
         }
     }
     #endregion
 
-   
 
 
-  #region ItemActions
+
+    #region ItemActions
     //make courtine
-    private void tryDrinkBeer(bool isLeftHand)
-    {
+    private void tryDrinkBeer(bool isLeftHand) {
         setChirality(isLeftHand);
-        
-            if (activeItem1.GetComponent<Drink>())
-            {
-                if (activeItem1.GetComponent<Drink>().liquidPercentage > 0)
-                {
-                    setActiveAction(isLeftHand);
-                    StartCoroutine(countineDrinkBeer(isLeftHand,activeItem1));
-                }
+
+        if (activeItem1.GetComponent<Drink>()) {
+            if (activeItem1.GetComponent<Drink>().liquidPercentage > 0) {
+                setActiveAction(isLeftHand);
+                StartCoroutine(countineDrinkBeer(isLeftHand, activeItem1));
             }
-        
+        }
+
     }
 
-    IEnumerator countineDrinkBeer(bool isLeftHand,ItemInfo beer)
-    {
-        
-        while(!isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){
-            if(beer.GetComponent<Drink>().liquidPercentage <= 0 || isLeftHand? !Input.GetButton("Fire1"): !Input.GetButton("Fire2")){
+    IEnumerator countineDrinkBeer(bool isLeftHand, ItemInfo beer) {
+
+        while (!isPerformingComboAction && isLeftHand ? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight) {
+            if (beer.GetComponent<Drink>().liquidPercentage <= 0 || isLeftHand ? !Input.GetButton("Fire1") : !Input.GetButton("Fire2")) {
                 break;
             }
-            if (beer.GetComponent<Drink>().liquidPercentage > 0 && isLeftHand? Input.GetButton("Fire1"): Input.GetButton("Fire2"))
-            {
-                if(isLeftHand){
+            if (beer.GetComponent<Drink>().liquidPercentage > 0 && isLeftHand ? Input.GetButton("Fire1") : Input.GetButton("Fire2")) {
+                if (isLeftHand) {
                     animator.SetBool("IsVapingLeft?", true);
-                    }else{
+                }
+                else {
                     animator.SetBool("IsVapingRight?", true);
-                    }
+                }
                 beer.GetComponent<Drink>().drainLiquid();
-                if (sickness > 0)
-                {
+                if (sickness > 0) {
                     sickness = sickness - 5 * Time.deltaTime;
                 }
             }
-           
+
             yield return null;
-            
+
         }
-        if(isLeftHand){
-                    animator.SetBool("IsVapingLeft?", false);
-                    }else{
-                    animator.SetBool("IsVapingRight?", false);
-                    }
+        if (isLeftHand) {
+            animator.SetBool("IsVapingLeft?", false);
+        }
+        else {
+            animator.SetBool("IsVapingRight?", false);
+        }
 
     }
 
 
 
 
-  
-    private void trySmokeCig(bool isLeftHand)
-    {
+
+    private void trySmokeCig(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1.GetComponent<Cig>())
-        {
-            if (activeItem1.GetComponent<Cig>().isSmoked == false)
-            {
+        if (activeItem1.GetComponent<Cig>()) {
+            if (activeItem1.GetComponent<Cig>().isSmoked == false) {
                 activeItem1.GetComponent<Cig>().isSmoked = true;
                 setActiveAction(isLeftHand);
                 setActionOveride(isLeftHand);
                 activeItem1.gameObject.GetComponent<Animator>().SetBool("isSmoking", true);
-                StartCoroutine(SmokeCig(activeItem1,isLeftHand));
+                StartCoroutine(SmokeCig(activeItem1, isLeftHand));
 
                 sickness = sickness + 25;
             }
         }
     }
 
-    IEnumerator SmokeCig(ItemInfo cig,bool IsLeftHand)
-    {
-        
-            yield return new WaitForSeconds(3);
-            releaseActionOveride(IsLeftHand);
-        
+    IEnumerator SmokeCig(ItemInfo cig, bool IsLeftHand) {
+
+        yield return new WaitForSeconds(3);
+        releaseActionOveride(IsLeftHand);
+
     }
-   
-   
-   
- 
-    private void tryVape(bool isLeftHand)
-    {
+
+
+
+
+    private void tryVape(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1.GetComponent<DeviceItem>())
-        {
+        if (activeItem1.GetComponent<DeviceItem>()) {
             DeviceItem device = activeItem1.GetComponent<DeviceItem>();
-            if (device.attachedPod)
-            {
+            if (device.attachedPod) {
                 PodItem pod = device.attachedPod;
-               
-                
+
+
                 setActiveAction(isLeftHand);
-                StartCoroutine(continueVaping(device,pod,isLeftHand));
-               
+                StartCoroutine(continueVaping(device, pod, isLeftHand));
+
 
             }
         }
     }
 
 
-    IEnumerator continueVaping(DeviceItem device,PodItem pod,bool isLeftHand){
+    IEnumerator continueVaping(DeviceItem device, PodItem pod, bool isLeftHand) {
 
-            // if (Input.GetButton("Movement1")) {
-            //     Debug.Log("Dash button down");
-            //     playerMovementController.isChargingDash = true;
-            // }
-            // if(Input.GetButtonDown("Movement1")){
-            //     playerMovementController.queueDashCharger = true;
-            // }
-            // // on release
-            // if (Input.GetButtonUp("Movement1")) {
-            //     Debug.Log("Dash button released");
-            //     playerMovementController.queueDash = true;
-            //     playerMovementController.isChargingDash = false;
-            // }
+        // if (Input.GetButton("Movement1")) {
+        //     Debug.Log("Dash button down");
+        //     playerMovementController.isChargingDash = true;
+        // }
+        // if(Input.GetButtonDown("Movement1")){
+        //     playerMovementController.queueDashCharger = true;
+        // }
+        // // on release
+        // if (Input.GetButtonUp("Movement1")) {
+        //     Debug.Log("Dash button released");
+        //     playerMovementController.queueDash = true;
+        //     playerMovementController.isChargingDash = false;
+        // }
 
-             playerMovementController.queueDashCharger = true;
+        playerMovementController.queueDashCharger = true;
 
 
-        
-            while(!isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){
-                
 
-                 isVaping = true;
-                if (device.batteryPercentage <= 0 || pod.juicePercentage <= 0 || (isLeftHand? !Input.GetButton("Fire1") : !Input.GetButton("Fire2")))
-                {
-                   
-                    
-                   
-                    break;
+        while (!isPerformingComboAction && isLeftHand ? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight) {
+
+
+            isVaping = true;
+            if (device.batteryPercentage <= 0 || pod.juicePercentage <= 0 || (isLeftHand ? !Input.GetButton("Fire1") : !Input.GetButton("Fire2"))) {
+
+
+
+                break;
+            }
+            if (device.batteryPercentage > 0 && pod.juicePercentage > 0) {
+                playerMovementController.isChargingDash = true;
+
+                if (!vapeSound.isPlaying) {
+                    vapeSound.Play();
                 }
-                 if (device.batteryPercentage > 0 && pod.juicePercentage > 0)
-                {
-                    playerMovementController.isChargingDash = true;
-
-                    if(!vapeSound.isPlaying){
-                        vapeSound.Play();
-                    }
-                    if(isLeftHand){
+                if (isLeftHand) {
                     animator.SetBool("IsVapingLeft?", true);
-                    }else{
+                }
+                else {
                     animator.SetBool("IsVapingRight?", true);
-                    }
-                    
-                    device.BatteryDrain();
-                    pod.JuiceDrain();
-                    device.updateLight();
-                     
-                    if (sickness < 100f)
-                    {
-                        sickness = sickness + Time.deltaTime * sicknessMultiplier;
-                    }
+                }
 
-                    if (craving > 0)
-                    {
-                     craving -= 7 * Time.deltaTime;
-                    }
+                device.BatteryDrain();
+                pod.JuiceDrain();
+                device.updateLight();
+
+                if (sickness < 100f) {
+                    sickness = sickness + Time.deltaTime * sicknessMultiplier;
+                }
+
+                if (craving > 0) {
+                    craving -= 7 * Time.deltaTime;
+                }
 
 
-                    
-                    
+
+
                 //UI
                 currentPodJuicePercentage = pod.juicePercentage;
                 currentDeviceBatteryPercentage = device.batteryPercentage;
-                    yield return null;
-                }
-
-                
+                yield return null;
             }
 
-            //Vaping Action Ends
 
-            playerMovementController.queueDash = true;
-            playerMovementController.isChargingDash = false;
+        }
+
+        //Vaping Action Ends
+
+        playerMovementController.queueDash = true;
+        playerMovementController.isChargingDash = false;
 
 
 
-            isVaping = false;
-            vapeSound.Stop();
-            if(isLeftHand){
-              animator.SetBool("IsVapingLeft?", false);
-            }else{
-              animator.SetBool("IsVapingRight?", false);
-            }
-            smokeTimer = 2;
+        isVaping = false;
+        vapeSound.Stop();
+        if (isLeftHand) {
+            animator.SetBool("IsVapingLeft?", false);
+        }
+        else {
+            animator.SetBool("IsVapingRight?", false);
+        }
+        smokeTimer = 2;
 
 
 
@@ -685,33 +635,26 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    private void tryPickUp(bool isLeftHand)
-    {
+    private void tryPickUp(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1 == emptyItem)
-        {
+        if (activeItem1 == emptyItem) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<ItemInfo>())
-                {
+                if (selection.GetComponent<ItemInfo>()) {
                     setActiveAction(isLeftHand);
                     Debug.Log("found item!" + selection);
-                    if (selection.GetComponent<ItemInfo>().isHuntable)
-                    {
+                    if (selection.GetComponent<ItemInfo>().isHuntable) {
                         selection.layer = LayerMask.NameToLayer("Default");
                     }
-                    if (selection.GetComponent<DeviceItem>())
-                    {
+                    if (selection.GetComponent<DeviceItem>()) {
                         selection.GetComponent<DeviceItem>().attachedCharger = false;
                     }
                     selection.GetComponent<Rigidbody>().isKinematic = true;
                     selection.GetComponent<Rigidbody>().useGravity = false;
                     selection.GetComponent<BoxCollider>().isTrigger = true;
-                    if (selection.GetComponent<ItemInfo>().isOnGround)
-                    {
+                    if (selection.GetComponent<ItemInfo>().isOnGround) {
                         selection.transform.localScale = selection.transform.localScale * .5f;
                     }
                     selection.GetComponent<ItemInfo>().isOnGround = false;
@@ -720,17 +663,14 @@ public class ActionManager : MonoBehaviour
                     selection.transform.parent = activeHand1.transform;
                     selection.transform.localEulerAngles = selection.GetComponent<ItemInfo>().parentRotationOffset;
                     selection.transform.localPosition = selection.GetComponent<ItemInfo>().parentPositionOffset;
-                    if (isLeftHand)
-                    {
+                    if (isLeftHand) {
                         itemLeftHand = selection.GetComponent<ItemInfo>();
                     }
-                    else
-                    {
+                    else {
                         itemRightHand = selection.GetComponent<ItemInfo>();
                     }
-                    
-                    if (selection.GetComponent<PickableNavAgent>())
-                    {
+
+                    if (selection.GetComponent<PickableNavAgent>()) {
                         selection.GetComponent<NavMeshAgent>().enabled = false;
                     }
                 }
@@ -738,21 +678,16 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void tryPlaceInventoryLeft()
-    {
-        if (Input.GetButton("Fire1") && inventoryOpen && !isPerformingActionLeft && !attemptingInventoryPlacementRight && !isPerformingOverideLeft && !isPerformingComboAction &&!attemptingInventoryPlacementLeft)
-        {
+    private void tryPlaceInventoryLeft() {
+        if (Input.GetButton("Fire1") && inventoryOpen && !isPerformingActionLeft && !attemptingInventoryPlacementRight && !isPerformingOverideLeft && !isPerformingComboAction && !attemptingInventoryPlacementLeft) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Inventory>())
-                {
+                if (selection.GetComponent<Inventory>()) {
                     activeItem1 = itemLeftHand;
                     activeHand1 = leftHand;
-                    if (itemLeftHand != emptyItem)
-                    {
+                    if (itemLeftHand != emptyItem) {
                         attemptingInventoryPlacementLeft = true;
                         isPerformingActionLeft = true;
                     }
@@ -760,15 +695,12 @@ public class ActionManager : MonoBehaviour
             }
         }
 
-        if (attemptingInventoryPlacementLeft)
-        {
+        if (attemptingInventoryPlacementLeft) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Inventory>())
-                {
+                if (selection.GetComponent<Inventory>()) {
                     ItemInfo item = itemLeftHand.GetComponent<ItemInfo>();
                     item.setGhostMaterial();
                     itemLeftHand.transform.parent = selection.transform;
@@ -778,8 +710,7 @@ public class ActionManager : MonoBehaviour
             }
         }
 
-        if (attemptingInventoryPlacementLeft && !inventoryOpen)
-        {
+        if (attemptingInventoryPlacementLeft && !inventoryOpen) {
             attemptingInventoryPlacementLeft = false;
             itemLeftHand.GetComponent<ItemInfo>().restoreMaterial();
             Debug.Log("triggered inventory placement cancel");
@@ -790,57 +721,46 @@ public class ActionManager : MonoBehaviour
             itemLeftHand.transform.localPosition = itemLeftHand.GetComponent<ItemInfo>().parentPositionOffset;
         }
 
-        if (attemptingInventoryPlacementLeft && !Input.GetButton("Fire1"))
-        {
+        if (attemptingInventoryPlacementLeft && !Input.GetButton("Fire1")) {
             Debug.Log("triggered inventory placement end");
             itemLeftHand.GetComponent<ItemInfo>().restoreMaterial();
             attemptingInventoryPlacementLeft = false;
-            if (itemLeftHand.GetComponent<ItemInfo>().colliding)
-            {
+            if (itemLeftHand.GetComponent<ItemInfo>().colliding) {
                 itemLeftHand.transform.position = leftHand.transform.position;
                 itemLeftHand.transform.rotation = leftHand.transform.rotation;
                 itemLeftHand.transform.parent = leftHand.transform;
                 itemLeftHand.transform.localEulerAngles = itemLeftHand.GetComponent<ItemInfo>().parentRotationOffset;
                 itemLeftHand.transform.localPosition = itemLeftHand.GetComponent<ItemInfo>().parentPositionOffset;
             }
-            else
-            {
+            else {
                 itemLeftHand = emptyItem;
             }
         }
     }
 
-    private void tryPlaceInventoryRight()
-    {
-        if (Input.GetButton("Fire2") && inventoryOpen && !isPerformingActionRight && !attemptingInventoryPlacementRight && !isPerformingOverideRight && !isPerformingComboAction &&!attemptingInventoryPlacementLeft)
-        {
+    private void tryPlaceInventoryRight() {
+        if (Input.GetButton("Fire2") && inventoryOpen && !isPerformingActionRight && !attemptingInventoryPlacementRight && !isPerformingOverideRight && !isPerformingComboAction && !attemptingInventoryPlacementLeft) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Inventory>())
-                {
-                   
-                    if (itemRightHand != emptyItem)
-                    {
+                if (selection.GetComponent<Inventory>()) {
+
+                    if (itemRightHand != emptyItem) {
                         attemptingInventoryPlacementRight = true;
                         isPerformingActionRight = true;
                     }
                 }
             }
         }
-        
 
-        if (attemptingInventoryPlacementRight)
-        {
+
+        if (attemptingInventoryPlacementRight) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Inventory>())
-                {
+                if (selection.GetComponent<Inventory>()) {
                     ItemInfo item = itemRightHand.GetComponent<ItemInfo>();
                     item.setGhostMaterial();
                     itemRightHand.transform.parent = selection.transform;
@@ -850,8 +770,7 @@ public class ActionManager : MonoBehaviour
             }
         }
 
-        if (attemptingInventoryPlacementRight && !inventoryOpen)
-        {
+        if (attemptingInventoryPlacementRight && !inventoryOpen) {
             attemptingInventoryPlacementRight = false;
             itemRightHand.GetComponent<ItemInfo>().restoreMaterial();
             Debug.Log("triggered inventory placement cancel");
@@ -862,150 +781,140 @@ public class ActionManager : MonoBehaviour
             itemRightHand.transform.localPosition = itemRightHand.GetComponent<ItemInfo>().parentPositionOffset;
         }
 
-        if (attemptingInventoryPlacementRight && !Input.GetButton("Fire2"))
-        {
+        if (attemptingInventoryPlacementRight && !Input.GetButton("Fire2")) {
             Debug.Log("triggered inventory placement end");
             itemRightHand.GetComponent<ItemInfo>().restoreMaterial();
             attemptingInventoryPlacementRight = false;
-            if (itemRightHand.GetComponent<ItemInfo>().colliding)
-            {
+            if (itemRightHand.GetComponent<ItemInfo>().colliding) {
                 itemRightHand.transform.position = rightHand.transform.position;
                 itemRightHand.transform.rotation = rightHand.transform.rotation;
                 itemRightHand.transform.parent = rightHand.transform;
                 itemRightHand.transform.localEulerAngles = itemRightHand.GetComponent<ItemInfo>().parentRotationOffset;
                 itemRightHand.transform.localPosition = itemRightHand.GetComponent<ItemInfo>().parentPositionOffset;
             }
-            else
-            {
+            else {
                 itemRightHand = emptyItem;
             }
         }
     }
 
-    private void tryDropItem(bool isLeftHand)
-    {
+    private void tryDropItem(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1 != emptyItem)
-        {
+        if (activeItem1 != emptyItem) {
             setActiveAction(isLeftHand);
             setActionOveride(isLeftHand);
-            StartCoroutine(dropItem(isLeftHand,activeItem1));
+            StartCoroutine(dropItem(isLeftHand, activeItem1));
 
-            
+
         }
     }
 
-    IEnumerator dropItem(bool isLeftHand,ItemInfo activeItem1){
+    IEnumerator dropItem(bool isLeftHand, ItemInfo activeItem1) {
         float throwTimer = 0;
-        while(isLeftHand? Input.GetButton("DropLeft") : Input.GetButton("DropRight")){
-           setActionOveride(isLeftHand);
-           if(isLeftHand){
-            animator.SetBool("IsDropLeft", true);
-           }else{
-            animator.SetBool("IsDropRight", true);
-           }
-           throwTimer += Time.deltaTime;
-           
+        while (isLeftHand ? Input.GetButton("DropLeft") : Input.GetButton("DropRight")) {
+            setActionOveride(isLeftHand);
+            if (isLeftHand) {
+                animator.SetBool("IsDropLeft", true);
+            }
+            else {
+                animator.SetBool("IsDropRight", true);
+            }
+            throwTimer += Time.deltaTime;
+
 
             yield return null;
         }
 
 
         //rescale item
-        if (!activeItem1.GetComponent<ItemInfo>().isOnGround)
-            {
-                activeItem1.transform.localScale = activeItem1.transform.localScale * 2f;
-            }
+        if (!activeItem1.GetComponent<ItemInfo>().isOnGround) {
+            activeItem1.transform.localScale = activeItem1.transform.localScale * 2f;
+        }
 
-             if (activeItem1.isHuntable)
-            {
-                activeItem1.gameObject.layer = LayerMask.NameToLayer("roaches");
+        if (activeItem1.isHuntable) {
+            activeItem1.gameObject.layer = LayerMask.NameToLayer("roaches");
+        }
+
+        //apply throw velocity
+        if (throwTimer > 1.67) {
+            if (isLeftHand) {
+                animator.SetBool("IsDropLeft", false);
+                animator.SetBool("IsThrowLeft", true);
+
             }
-            
-            //apply throw velocity
-            if(throwTimer>1.67){
-                if(isLeftHand){
-            animator.SetBool("IsDropLeft", false);
-            animator.SetBool("IsThrowLeft",true);
-            
-           }else{
-            animator.SetBool("IsDropRight", false);
-            animator.SetBool("IsThrowRight",true);
-           }
-           yield return new WaitForSeconds(0.05f);
+            else {
+                animator.SetBool("IsDropRight", false);
+                animator.SetBool("IsThrowRight", true);
+            }
+            yield return new WaitForSeconds(0.05f);
             activeItem1.GetComponent<ItemInfo>().isOnGround = true;
             activeItem1.GetComponent<Rigidbody>().isKinematic = false;
             activeItem1.GetComponent<Rigidbody>().useGravity = true;
             activeItem1.GetComponent<BoxCollider>().isTrigger = false;
-             activeItem1.transform.parent = null;
-            activeItem1.GetComponent<Rigidbody>().velocity += Camera.main.transform.forward * 10 ;
-            if(isLeftHand){
-            animator.SetBool("IsThrowLeft", false);
-           
-            
-           }else{
-            animator.SetBool("IsThrowRight", false);
-            
-           }   
-            }else{
-            if(isLeftHand){
-            animator.SetBool("IsDropLeft", false);
-           
-            
-           }else{
-            animator.SetBool("IsDropRight", false);
-            
-           }        
-             activeItem1.GetComponent<ItemInfo>().isOnGround = true;
+            activeItem1.transform.parent = null;
+            activeItem1.GetComponent<Rigidbody>().velocity += Camera.main.transform.forward * 10;
+            if (isLeftHand) {
+                animator.SetBool("IsThrowLeft", false);
+
+
+            }
+            else {
+                animator.SetBool("IsThrowRight", false);
+
+            }
+        }
+        else {
+            if (isLeftHand) {
+                animator.SetBool("IsDropLeft", false);
+
+
+            }
+            else {
+                animator.SetBool("IsDropRight", false);
+
+            }
+            activeItem1.GetComponent<ItemInfo>().isOnGround = true;
             activeItem1.GetComponent<Rigidbody>().isKinematic = false;
             activeItem1.GetComponent<Rigidbody>().useGravity = true;
             activeItem1.GetComponent<BoxCollider>().isTrigger = false;
-             activeItem1.transform.parent = null;
-    }
-           
+            activeItem1.transform.parent = null;
+        }
 
-           
 
-            if (isLeftHand)
-            {
-                itemLeftHand = emptyItem;
-            }
-            else
-            {
-                itemRightHand = emptyItem;
-            }
+
+
+        if (isLeftHand) {
+            itemLeftHand = emptyItem;
+        }
+        else {
+            itemRightHand = emptyItem;
+        }
         releaseActionOveride(isLeftHand);
         //drop the item
-         
+
 
 
     }
 
-    private void tryPlaceCharger(bool isLeftHand)
-    {
+    private void tryPlaceCharger(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1.GetComponent<DeviceItem>() )
-        {
+        if (activeItem1.GetComponent<DeviceItem>()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Outlet>())
-                {
+                if (selection.GetComponent<Outlet>()) {
                     setActiveAction(isLeftHand);
-                    
+
                     activeItem1.transform.position = hit.point;
                     activeItem1.transform.parent = selection.transform;
                     activeItem1.transform.localRotation = quaternion.identity;
                     activeItem1.GetComponent<DeviceItem>().attachedCharger = true;
 
-                    if (isLeftHand)
-                    {
+                    if (isLeftHand) {
                         itemLeftHand = emptyItem;
                     }
-                    else
-                    {
+                    else {
                         itemRightHand = emptyItem;
                     }
                 }
@@ -1013,32 +922,26 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void tryPlaceKey(bool isLeftHand)
-    {
+    private void tryPlaceKey(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1.GetComponent<Key>())
-        {
+        if (activeItem1.GetComponent<Key>()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-            {
+            if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
                 var selection = hit.transform.gameObject;
-                if (selection.GetComponent<Lock>())
-                {
+                if (selection.GetComponent<Lock>()) {
                     setActiveAction(isLeftHand);
-                    
+
                     activeItem1.transform.position = hit.point;
                     activeItem1.transform.parent = selection.transform;
                     activeItem1.transform.localRotation = quaternion.identity;
                     Destroy(activeItem1.GetComponent<BoxCollider>());
                     selection.GetComponent<Lock>().insertKey();
 
-                    if (isLeftHand)
-                    {
+                    if (isLeftHand) {
                         itemLeftHand = emptyItem;
                     }
-                    else
-                    {
+                    else {
                         itemRightHand = emptyItem;
                     }
                 }
@@ -1046,30 +949,24 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void tryDepositCash(bool isLeftHand)
-    {
+    private void tryDepositCash(bool isLeftHand) {
         setChirality(isLeftHand);
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable))
-        {
+        if (Physics.Raycast(ray, out hit, pickUpRange, RayCastHitable)) {
             var selection = hit.transform.gameObject;
-            if (selection.GetComponent<CashRegister>())
-            {
-                if (activeItem1.GetComponent<Cash>())
-                {
+            if (selection.GetComponent<CashRegister>()) {
+                if (activeItem1.GetComponent<Cash>()) {
                     setActiveAction(isLeftHand);
-                   
+
                     cashBalace = cashBalace + activeItem1.GetComponent<Cash>().value;
                     selection.GetComponent<CashRegister>().chaChing.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
                     selection.GetComponent<CashRegister>().chaChing.Play();
-                    if (isLeftHand)
-                    {
+                    if (isLeftHand) {
                         Destroy(itemLeftHand.gameObject);
                         itemLeftHand = emptyItem;
                     }
-                    else
-                    {
+                    else {
                         Destroy(itemRightHand.gameObject);
                         itemRightHand = emptyItem;
                     }
@@ -1078,41 +975,33 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    
+
     #endregion
 
     #region comboActions
 
-    private void tryDepositCig(bool isLeftHand)
-    {
+    private void tryDepositCig(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (activeItem1.GetComponent<CigPacket>() && activeItem2.GetComponent<Cig>() && !isPerformingComboAction)
-        {
-            if (activeItem1.GetComponent<CigPacket>().depositCig(activeItem2.gameObject))
-            {
+        if (activeItem1.GetComponent<CigPacket>() && activeItem2.GetComponent<Cig>() && !isPerformingComboAction) {
+            if (activeItem1.GetComponent<CigPacket>().depositCig(activeItem2.gameObject)) {
                 isPerformingComboAction = true;
-                if (isLeftHand)
-                {
+                if (isLeftHand) {
                     itemRightHand = emptyItem;
                 }
-                else
-                {
+                else {
                     itemLeftHand = emptyItem;
                 }
             }
         }
     }
 
-    private void tryWithdrawlCig(bool isLeftHand)
-    {
+    private void tryWithdrawlCig(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (isPerformingComboAction == false && activeItem1.GetComponent<CigPacket>() && activeItem2 == emptyItem)
-        {
+        if (isPerformingComboAction == false && activeItem1.GetComponent<CigPacket>() && activeItem2 == emptyItem) {
             GameObject cigToEquip;
             cigToEquip = activeItem1.GetComponent<CigPacket>().withdrawlCig();
 
-            if (cigToEquip != null)
-            {
+            if (cigToEquip != null) {
                 isPerformingComboAction = true;
                 cigToEquip.transform.position = activeHand2.transform.position;
                 cigToEquip.transform.rotation = activeHand2.transform.rotation;
@@ -1120,27 +1009,21 @@ public class ActionManager : MonoBehaviour
                 cigToEquip.transform.localEulerAngles = cigToEquip.GetComponent<ItemInfo>().parentRotationOffset;
                 cigToEquip.transform.localPosition = cigToEquip.GetComponent<ItemInfo>().parentPositionOffset;
 
-                if (isLeftHand)
-                {
+                if (isLeftHand) {
                     itemRightHand = cigToEquip.GetComponent<ItemInfo>();
                 }
-                else
-                {
+                else {
                     itemLeftHand = cigToEquip.GetComponent<ItemInfo>();
                 }
             }
         }
     }
 
-    private void tryFillPod(bool isLeftHand)
-    {
+    private void tryFillPod(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (!isPerformingComboAction)
-        {
-            if (activeItem1.GetComponent<PodItem>() && activeItem2.GetComponent<JuiceBottle>())
-            {
-                if (activeItem1.GetComponent<PodItem>().isFillable)
-                {
+        if (!isPerformingComboAction) {
+            if (activeItem1.GetComponent<PodItem>() && activeItem2.GetComponent<JuiceBottle>()) {
+                if (activeItem1.GetComponent<PodItem>().isFillable) {
                     StartCoroutine(countinueFillPod(isLeftHand));
                     isPerformingComboAction = true;
                 }
@@ -1148,63 +1031,53 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    IEnumerator countinueFillPod(bool isLeftHand){
-        
-        
-        while( !isPerformingComboAction && isLeftHand? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight){
-            if(activeItem1.GetComponent<PodItem>().juicePercentage >= 100 || activeItem2.GetComponent<JuiceBottle>().juicePercentage <= 0 || isLeftHand? !Input.GetButton("Fire1") : !Input.GetButton("Fire2")){
-                
+    IEnumerator countinueFillPod(bool isLeftHand) {
+
+
+        while (!isPerformingComboAction && isLeftHand ? !attemptingInventoryPlacementLeft : !attemptingInventoryPlacementRight) {
+            if (activeItem1.GetComponent<PodItem>().juicePercentage >= 100 || activeItem2.GetComponent<JuiceBottle>().juicePercentage <= 0 || isLeftHand ? !Input.GetButton("Fire1") : !Input.GetButton("Fire2")) {
+
                 break;
             }
-        if (activeItem1.GetComponent<PodItem>().juicePercentage < 100 && activeItem2.GetComponent<JuiceBottle>().juicePercentage > 0)
-                    {
-                        activeItem2.GetComponent<JuiceBottle>().JuiceDrain();
-                        activeItem1.GetComponent<PodItem>().JuiceFill();
-                       
-                    
-                        yield return null;
-                    }
+            if (activeItem1.GetComponent<PodItem>().juicePercentage < 100 && activeItem2.GetComponent<JuiceBottle>().juicePercentage > 0) {
+                activeItem2.GetComponent<JuiceBottle>().JuiceDrain();
+                activeItem1.GetComponent<PodItem>().JuiceFill();
+
+
+                yield return null;
+            }
         }
-        
+
     }
 
-    private void tryAttachPod(bool isLeftHand)
-    {
+    private void tryAttachPod(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (isPerformingComboAction == false && activeItem1.GetComponent<DeviceItem>() && activeItem2.GetComponent<PodItem>() && !activeItem1.GetComponent<DeviceItem>().attachedPod && activeItem1.GetComponent<DeviceItem>().checkCompatiblity(activeItem2.GetComponent<PodItem>()))
-        {
+        if (isPerformingComboAction == false && activeItem1.GetComponent<DeviceItem>() && activeItem2.GetComponent<PodItem>() && !activeItem1.GetComponent<DeviceItem>().attachedPod && activeItem1.GetComponent<DeviceItem>().checkCompatiblity(activeItem2.GetComponent<PodItem>())) {
             activeItem1.GetComponent<DeviceItem>().attachPod(activeItem2.GetComponent<PodItem>());
-            if (isLeftHand)
-            {
+            if (isLeftHand) {
                 itemRightHand = emptyItem;
             }
-            else
-            {
+            else {
                 itemLeftHand = emptyItem;
             }
             isPerformingComboAction = true;
         }
     }
 
-    private void tryDettachPod(bool isLeftHand)
-    {
+    private void tryDettachPod(bool isLeftHand) {
         setChirality(isLeftHand);
-        if (!isPerformingComboAction && activeItem1.GetComponent<DeviceItem>() && activeItem2 == emptyItem)
-        {
+        if (!isPerformingComboAction && activeItem1.GetComponent<DeviceItem>() && activeItem2 == emptyItem) {
             DeviceItem device = activeItem1.gameObject.GetComponent<DeviceItem>();
-            if (device.attachedPod)
-            {
+            if (device.attachedPod) {
                 PodItem pod = device.attachedPod;
                 activeItem1.GetComponent<DeviceItem>().dettachPod();
                 pod.gameObject.transform.parent = activeHand2.transform;
                 pod.gameObject.transform.position = activeHand2.transform.position;
                 pod.gameObject.transform.rotation = activeHand2.transform.rotation;
-                if (isLeftHand)
-                {
+                if (isLeftHand) {
                     itemRightHand = pod.gameObject.GetComponent<ItemInfo>();
                 }
-                else
-                {
+                else {
                     itemLeftHand = pod.gameObject.GetComponent<ItemInfo>();
                 }
                 isPerformingComboAction = true;
@@ -1217,34 +1090,28 @@ public class ActionManager : MonoBehaviour
     #endregion
 
     #region otherFunctions
-     private void SicknessManager()
-    {
+    private void SicknessManager() {
         fullScreenEffectController.setVigBlend(sickness);
 
-        if (sickness > 0f)
-        {
+        if (sickness > 0f) {
             sickness -= 0.5f * Time.deltaTime;
         }
 
-        if (sickness > 5)
-        {
+        if (sickness > 5) {
             swayCamera(sickness);
         }
-        else
-        {
+        else {
             cameraParent.transform.localEulerAngles = new Vector3(cameraParent.transform.localEulerAngles.x, 0, cameraParent.transform.localEulerAngles.z);
         }
 
-        if (sickness > 60)
-        {
+        if (sickness > 60) {
             fullScreenEffectController.setNauseaBlend(true, sickness);
             Puke();
             delayEffect.wetMix = math.remap(60, 100, 0, 1, sickness);
             reverbFilter.enabled = true;
             playerMovementController.GetComponent<PlayerMovementController>().pukeSpeedModifier = speedModifier;
         }
-        else
-        {
+        else {
             reverbFilter.enabled = false;
             delayEffect.wetMix = 0;
             fullScreenEffectController.setNauseaBlend(false, sickness);
@@ -1252,63 +1119,51 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    private void Puke()
-    {
+    private void Puke() {
         pukeTimer -= Time.deltaTime;
 
-        if (pukeTimer > 7 && pukeTimer < 10)
-        {
+        if (pukeTimer > 7 && pukeTimer < 10) {
             speedModifier = math.remap(7, 10, 0, 1, pukeTimer);
         }
 
-        if (pukeTimer > 6 && pukeTimer < 7)
-        {
+        if (pukeTimer > 6 && pukeTimer < 7) {
             puke.Play();
-            if (!pukeSound.isPlaying)
-            {
+            if (!pukeSound.isPlaying) {
                 pukeSound.Play();
                 health -= 1;
             }
         }
 
-        if (pukeTimer > 3 && pukeTimer < 6)
-        {
+        if (pukeTimer > 3 && pukeTimer < 6) {
             speedModifier = math.remap(3, 6, 1, 0, pukeTimer);
         }
 
-        if (pukeTimer < 0)
-        {
+        if (pukeTimer < 0) {
             pukeTimer = 15;
         }
     }
 
-    private void swayCamera(float swayMult)
-    {
+    private void swayCamera(float swayMult) {
         swayMult /= 5;
-        if (swayR <= swayMult && swayDirection)
-        {
+        if (swayR <= swayMult && swayDirection) {
             swayR += swayMult * Time.deltaTime;
         }
 
-        if (swayR >= -swayMult && !swayDirection)
-        {
+        if (swayR >= -swayMult && !swayDirection) {
             swayR -= swayMult * Time.deltaTime;
         }
 
-        if (swayR >= swayMult)
-        {
+        if (swayR >= swayMult) {
             swayDirection = false;
         }
 
-        if (swayR <= -swayMult)
-        {
+        if (swayR <= -swayMult) {
             swayDirection = true;
         }
 
         cameraParent.transform.localEulerAngles = new Vector3(cameraParent.transform.localEulerAngles.x, swayR, cameraParent.transform.localEulerAngles.z);
     }
-      private void UpdateUI()
-    {
+    private void UpdateUI() {
         statusBars.text =
             "Juice" + (int)currentPodJuicePercentage +
             "<br>Battery" + (int)currentDeviceBatteryPercentage +

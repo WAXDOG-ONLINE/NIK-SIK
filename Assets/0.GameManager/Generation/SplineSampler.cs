@@ -7,8 +7,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 [ExecuteInEditMode()]
-public class SplineSampler : MonoBehaviour
-{
+public class SplineSampler : MonoBehaviour {
     [SerializeField]
     private SplineContainer m_splineContainer;
 
@@ -31,8 +30,7 @@ public class SplineSampler : MonoBehaviour
     Vector3 p1;
     Vector3 p2;
 
-    private void Update()
-    {
+    private void Update() {
         m_splineContainer.Evaluate(m_splineIndex, m_time, out m_position, out m_foward, out m_upVector);
 
         //Tangent is the forward direction
@@ -43,21 +41,18 @@ public class SplineSampler : MonoBehaviour
 
     }
 
-    public void SampleSplineWidth(int splineIndex, float t, float width, out Vector3 p1, out Vector3 p2)
-    {
+    public void SampleSplineWidth(int splineIndex, float t, float width, out Vector3 p1, out Vector3 p2) {
         m_splineContainer.Evaluate(splineIndex, t, out float3 position, out float3 forward, out float3 upVector);
 
         float3 right = Vector3.Cross(forward, upVector).normalized;
         p1 = position + (right * width);
         p2 = position + (-right * width);
     }
-    public void SampleSplineWidth(float t, float width, out Vector3 p1, out Vector3 p2)
-    {
+    public void SampleSplineWidth(float t, float width, out Vector3 p1, out Vector3 p2) {
         SampleSplineWidth(m_splineIndex, t, width, out p1, out p2);
     }
 
-    private void OnDrawGizmosSelected()
-    {
+    private void OnDrawGizmosSelected() {
         Handles.matrix = transform.localToWorldMatrix;
         Handles.SphereHandleCap(0, p1, Quaternion.identity, .5f, EventType.Repaint);
         Handles.DrawDottedLine(p1, p2, .5f);
@@ -66,6 +61,6 @@ public class SplineSampler : MonoBehaviour
 
         //Debug
         SplineToolUtility.GetSelection();
-        
+
     }
 }

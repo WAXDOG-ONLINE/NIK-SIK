@@ -4,35 +4,31 @@ using System.Numerics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RoachAI : MonoBehaviour
-{
-public NavMeshAgent agent;
+public class RoachAI : MonoBehaviour {
+    public NavMeshAgent agent;
 
-public LayerMask whatIsGround;
+    public LayerMask whatIsGround;
 
 
-   void Awake()
-    {
-        
+    void Awake() {
+
         agent = GetComponent<NavMeshAgent>();
-        
+
     }
 
-void Update()
-    {
+    void Update() {
         Patroling();
     }
     //patrolling
-    public  UnityEngine.Vector3 walkPoint;
+    public UnityEngine.Vector3 walkPoint;
     bool walkPointSet;
     public float walkPointRange;
 
     // Start is called before the first frame update
- 
 
 
-private void Patroling()
-    {
+
+    private void Patroling() {
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -44,8 +40,7 @@ private void Patroling()
         if (distanceToWalkPoint.magnitude < 1f)
             walkPointSet = false;
     }
- private void SearchWalkPoint()
-    {
+    private void SearchWalkPoint() {
         //Calculate random point in range
         float randomZ = Random.Range(-walkPointRange, walkPointRange);
         float randomX = Random.Range(-walkPointRange, walkPointRange);
@@ -56,5 +51,5 @@ private void Patroling()
             walkPointSet = true;
     }
     // Update is called once per frame
-    
+
 }

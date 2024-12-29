@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class Liquid : MonoBehaviour
-{
+public class Liquid : MonoBehaviour {
     public enum UpdateMode { Normal, UnscaledTime }
     public UpdateMode updateMode;
 
@@ -39,32 +38,25 @@ public class Liquid : MonoBehaviour
     Vector3 comp;
 
     // Use this for initialization
-    void Start()
-    {
+    void Start() {
         GetMeshAndRend();
     }
 
-    private void OnValidate()
-    {
+    private void OnValidate() {
         GetMeshAndRend();
     }
 
-    void GetMeshAndRend()
-    {
-        if (mesh == null)
-        {
+    void GetMeshAndRend() {
+        if (mesh == null) {
             mesh = GetComponent<MeshFilter>().sharedMesh;
         }
-        if (rend == null)
-        {
+        if (rend == null) {
             rend = GetComponent<Renderer>();
         }
     }
-    void Update()
-    {
+    void Update() {
         float deltaTime = 0;
-        switch (updateMode)
-        {
+        switch (updateMode) {
             case UpdateMode.Normal:
                 deltaTime = Time.deltaTime;
                 break;
@@ -76,8 +68,7 @@ public class Liquid : MonoBehaviour
 
         time += deltaTime;
 
-        if (deltaTime != 0)
-        {
+        if (deltaTime != 0) {
 
 
             // decrease wobble over time
@@ -117,34 +108,28 @@ public class Liquid : MonoBehaviour
         lastRot = transform.rotation;
     }
 
-    void UpdatePos(float deltaTime)
-    {
+    void UpdatePos(float deltaTime) {
 
         Vector3 worldPos = transform.TransformPoint(new Vector3(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z));
-        if (CompensateShapeAmount > 0)
-        {
+        if (CompensateShapeAmount > 0) {
             // only lerp if not paused/normal update
-            if (deltaTime != 0)
-            {
+            if (deltaTime != 0) {
                 comp = Vector3.Lerp(comp, (worldPos - new Vector3(0, GetLowestPoint(), 0)), deltaTime * 10);
             }
-            else
-            {
+            else {
                 comp = (worldPos - new Vector3(0, GetLowestPoint(), 0));
             }
 
             pos = worldPos - transform.position - new Vector3(0, fillAmount - (comp.y * CompensateShapeAmount), 0);
         }
-        else
-        {
+        else {
             pos = worldPos - transform.position - new Vector3(0, fillAmount, 0);
         }
         rend.sharedMaterial.SetVector("_FillAmount", pos);
     }
 
     //https://forum.unity.com/threads/manually-calculate-angular-velocity-of-gameobject.289462/#post-4302796
-    Vector3 GetAngularVelocity(Quaternion foreLastFrameRotation, Quaternion lastFrameRotation)
-    {
+    Vector3 GetAngularVelocity(Quaternion foreLastFrameRotation, Quaternion lastFrameRotation) {
         var q = lastFrameRotation * Quaternion.Inverse(foreLastFrameRotation);
         // no rotation?
         // You may want to increase this closer to 1 if you want to handle very small rotations.
@@ -153,38 +138,32 @@ public class Liquid : MonoBehaviour
             return Vector3.zero;
         float gain;
         // handle negatives, we could just flip it but this is faster
-        if (q.w < 0.0f)
-        {
+        if (q.w < 0.0f) {
             var angle = Mathf.Acos(-q.w);
             gain = -2.0f * angle / (Mathf.Sin(angle) * Time.deltaTime);
         }
-        else
-        {
+        else {
             var angle = Mathf.Acos(q.w);
             gain = 2.0f * angle / (Mathf.Sin(angle) * Time.deltaTime);
         }
         Vector3 angularVelocity = new Vector3(q.x * gain, q.y * gain, q.z * gain);
 
-        if (float.IsNaN(angularVelocity.z))
-        {
+        if (float.IsNaN(angularVelocity.z)) {
             angularVelocity = Vector3.zero;
         }
         return angularVelocity;
     }
 
-    float GetLowestPoint()
-    {
+    float GetLowestPoint() {
         float lowestY = float.MaxValue;
         Vector3 lowestVert = Vector3.zero;
         Vector3[] vertices = mesh.vertices;
 
-        for (int i = 0; i < vertices.Length; i++)
-        {
+        for (int i = 0; i < vertices.Length; i++) {
 
             Vector3 position = transform.TransformPoint(vertices[i]);
 
-            if (position.y < lowestY)
-            {
+            if (position.y < lowestY) {
                 lowestY = position.y;
                 lowestVert = position;
             }

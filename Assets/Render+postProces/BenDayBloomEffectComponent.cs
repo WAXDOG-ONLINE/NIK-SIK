@@ -6,8 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 [Serializable, VolumeComponentMenuForRenderPipeline("Custom/Ben Day Bloom", typeof(UniversalRenderPipeline))]
-public class BenDayBloomEffectComponent : VolumeComponent, IPostProcessComponent
-{
+public class BenDayBloomEffectComponent : VolumeComponent, IPostProcessComponent {
     [Header("Bloom Settings")]
     public FloatParameter threshold = new FloatParameter(0.9f, true);
 
@@ -28,10 +27,8 @@ public class BenDayBloomEffectComponent : VolumeComponent, IPostProcessComponent
 
     public Vector2Parameter scrollDirection = new Vector2Parameter(new Vector2());
 
-    public bool IsActive()
-    {
-        if (!AnyPropertiesIsOverridden())
-        {
+    public bool IsActive() {
+        if (!AnyPropertiesIsOverridden()) {
             return false;
         }
         return (intensity.value > 0);

@@ -6,8 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class DeviceItem : MonoBehaviour
-{
+public class DeviceItem : MonoBehaviour {
 
     public float batteryPercentage;
     public float batteryDrainRate;
@@ -26,64 +25,63 @@ public class DeviceItem : MonoBehaviour
     public bool attachedCharger;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-      
+    void Start() {
+
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(vLight.intensity > 0){
-        vLight.intensity = vLight.intensity - 0.25f; 
+    void Update() {
+        if (vLight.intensity > 0) {
+            vLight.intensity = vLight.intensity - 0.25f;
         }
-        if(vLight.intensity <= 0){
+        if (vLight.intensity <= 0) {
             vLight.enabled = false;
         }
 
-        if(attachedCharger && batteryPercentage <= 100){
-            batteryPercentage = batteryPercentage + Time.deltaTime*batteyChargeRate;
+        if (attachedCharger && batteryPercentage <= 100) {
+            batteryPercentage = batteryPercentage + Time.deltaTime * batteyChargeRate;
         }
-        
+
     }
 
-    
-    public void BatteryDrain(){
-        if (batteryPercentage  > 0){
-        batteryPercentage = batteryPercentage - Time.deltaTime*batteryDrainRate;
+
+    public void BatteryDrain() {
+        if (batteryPercentage > 0) {
+            batteryPercentage = batteryPercentage - Time.deltaTime * batteryDrainRate;
         }
     }
-     
-
-    public void updateLight(){
-        if(vLight.intensity < maxLightValue && batteryPercentage > 0f){
-                                vLight.intensity = vLight.intensity + 0.5f;  
-                                vLight.enabled = true;
-                                                        }
-    vLight.color = Color.Lerp(lightColorEmpty,lightColorFull,batteryPercentage/100);
-    
 
 
-     }
+    public void updateLight() {
+        if (vLight.intensity < maxLightValue && batteryPercentage > 0f) {
+            vLight.intensity = vLight.intensity + 0.5f;
+            vLight.enabled = true;
+        }
+        vLight.color = Color.Lerp(lightColorEmpty, lightColorFull, batteryPercentage / 100);
 
 
+
+    }
 
 
 
 
-     public bool checkCompatiblity(PodItem toBeAttached){
-        
-        if( compatibility == toBeAttached.compatibility){
+
+
+    public bool checkCompatiblity(PodItem toBeAttached) {
+
+        if (compatibility == toBeAttached.compatibility) {
             return true;
-        }else{
+        }
+        else {
             return false;
         }
 
 
 
     }
-    public void attachPod(PodItem toBeAttached){
+    public void attachPod(PodItem toBeAttached) {
 
         toBeAttached.transform.parent = transform;
         toBeAttached.transform.position = transform.position;
@@ -96,13 +94,13 @@ public class DeviceItem : MonoBehaviour
     }
 
 
-    public void dettachPod(){
-       attachedPod.gameObject.layer = LayerMask.NameToLayer("Default");
-       
+    public void dettachPod() {
+        attachedPod.gameObject.layer = LayerMask.NameToLayer("Default");
+
         attachedPod = null;
-    
+
 
     }
 
-   
+
 }
