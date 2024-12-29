@@ -11,8 +11,7 @@ using UnityEditor.UIElements;
 using UnityEngine.Splines;
 using UnityEngine.UIElements;
 [Overlay(typeof(SceneView), "Junction Builder", true)]
-public class JunctionBuilderOverlay : Overlay
-{
+public class JunctionBuilderOverlay : Overlay {
 
     Label SelectionInfoLabel;
     Button BuildJunctionButton;
@@ -22,8 +21,7 @@ public class JunctionBuilderOverlay : Overlay
 
     public Action OnChangeValueEvent { get; internal set; }
 
-    public override VisualElement CreatePanelContent()
-    {
+    public override VisualElement CreatePanelContent() {
         instance = this;
 
         SelectionInfoLabel = new Label();
@@ -47,13 +45,11 @@ public class JunctionBuilderOverlay : Overlay
 
     }
 
-    private void OnBuildJunction()
-    {
+    private void OnBuildJunction() {
         List<SelectedSplineElementInfo> selection = SplineToolUtility.GetSelection();
 
         Intersection intersection = new Intersection();
-        foreach(SelectedSplineElementInfo item in selection)
-        {
+        foreach (SelectedSplineElementInfo item in selection) {
             //Get the spline container;
             SplineContainer container = (SplineContainer)item.target;
             Spline spline = container.Splines[item.targetIndex];
@@ -64,54 +60,45 @@ public class JunctionBuilderOverlay : Overlay
         Selection.activeObject.GetComponent<SplineRoad>().AddJunction(intersection);
     }
 
-    private void OnSelectionChanged()
-    {
+    private void OnSelectionChanged() {
         BuildJunctionButton.SetEnabled(SplineToolUtility.GetSelection().Count > 1);
 
         BuildJunctionButton.visible = true;
-        if (SplineToolUtility.GetSelection().Count>0)
-        {
+        if (SplineToolUtility.GetSelection().Count > 0) {
             UpdateSelectionInfo();
         }
-        else
-        {
+        else {
             ClearSelectionInfo();
         }
     }
 
-    private void ClearSelectionInfo()
-    {
+    private void ClearSelectionInfo() {
         SelectionInfoLabel.text = "";
     }
 
-    private void UpdateSelectionInfo()
-    {
+    private void UpdateSelectionInfo() {
         ClearSelectionInfo();
 
-       List<SelectedSplineElementInfo> infos = SplineToolUtility.GetSelection();
-        foreach(SelectedSplineElementInfo element in infos)
-        {
+        List<SelectedSplineElementInfo> infos = SplineToolUtility.GetSelection();
+        foreach (SelectedSplineElementInfo element in infos) {
             SelectionInfoLabel.text += $"Spline {element.targetIndex}, Knot {element.knotIndex} \n";
         }
 
     }
 
-    public void ShowIntersection(Intersection intersection)
-    {
+    public void ShowIntersection(Intersection intersection) {
         SelectionInfoLabel.text = "Selected Intersection";
         BuildJunctionButton.visible = false;
 
         SliderArea.Clear();
 
-        for(int i=0; i<intersection.curves.Count; i++)
-        {
+        for (int i = 0; i < intersection.curves.Count; i++) {
             int value = i;
             Slider slider = new Slider($"Curve {i}", 0, 1, SliderDirection.Horizontal);
             slider.labelElement.style.minWidth = 60;
             slider.labelElement.style.maxWidth = 80;
             slider.value = intersection.curves[i];
-            slider.RegisterValueChangedCallback((x) =>
-            {
+            slider.RegisterValueChangedCallback((x) => {
                 intersection.curves[value] = x.newValue;
                 OnChangeValueEvent.Invoke();
             });

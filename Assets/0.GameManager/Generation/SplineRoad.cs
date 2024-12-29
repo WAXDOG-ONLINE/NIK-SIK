@@ -2,19 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 using UnityEngine.Splines;
-using UnityEngine.AI;
-using Unity.AI.Navigation;
 [RequireComponent(typeof(SplineSampler))]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [ExecuteInEditMode()]
-public class SplineRoad : MonoBehaviour
-{
+public class SplineRoad : MonoBehaviour {
     public NavMeshSurface navMesh;
     [SerializeField]
     private float wallHeight = 4;
@@ -22,9 +21,9 @@ public class SplineRoad : MonoBehaviour
     private SplineSampler m_splineSampler;
     [SerializeField]
     private MeshFilter m_meshFilter;
-    
+
     private MeshRenderer m_meshRenderer;
-    
+
     private List<Vector3> m_vertsP1;
     private List<Vector3> m_vertsP2;
 
@@ -32,7 +31,7 @@ public class SplineRoad : MonoBehaviour
     private int resolution = 10;
     [SerializeField, Range(0.1f, 100f)]
     private float tilingLength = 2;
-    [SerializeField, Range(0.01f,1f)]
+    [SerializeField, Range(0.01f, 1f)]
     private float m_curveStep = 0.1f;
     [SerializeField]
     private float m_width;
@@ -43,37 +42,31 @@ public class SplineRoad : MonoBehaviour
     public List<Intersection> Intersections => intersections;
 
     //Draw mesh
-    private void Awake()
-    {
-        
-        
+    private void Awake() {
+
+
         m_meshRenderer = gameObject.GetComponent<MeshRenderer>();
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         Spline.Changed += OnSplineChanged;
         GetSplineVerts();
     }
 
-    private void OnSplineChanged(Spline arg1, int arg2, SplineModification arg3)
-    {
+    private void OnSplineChanged(Spline arg1, int arg2, SplineModification arg3) {
         Rebuild();
     }
 
-    public void Rebuild()
-    {
+    public void Rebuild() {
         GetSplineVerts();
         BuildMesh();
     }
 
-    private void OnValidate()
-    {
+    private void OnValidate() {
         Rebuild();
     }
 
-    private void BuildMesh()
-    {
+    private void BuildMesh() {
         Mesh m = new Mesh();
 
         List<Vector3> verts = new List<Vector3>();
@@ -85,16 +78,14 @@ public class SplineRoad : MonoBehaviour
 
         int length = m_vertsP2.Count;
 
-        
+
         float uvOffset = 0f;
 
-        for (int currentSplineIndex = 0; currentSplineIndex < m_splineSampler.NumSplines; currentSplineIndex++)
-        {
+        for (int currentSplineIndex = 0; currentSplineIndex < m_splineSampler.NumSplines; currentSplineIndex++) {
             int splineOffset = resolution * currentSplineIndex;
             splineOffset += currentSplineIndex;
             //Iterate verts and build a face
-            for (int currentSplinePoint = 1; currentSplinePoint < resolution+1; currentSplinePoint++)
-            {
+            for (int currentSplinePoint = 1; currentSplinePoint < resolution + 1; currentSplinePoint++) {
                 //get vertices for spline floor faces
                 int vertoffset = splineOffset + currentSplinePoint;
                 Vector3 p1 = m_vertsP1[vertoffset - 1];
@@ -105,17 +96,17 @@ public class SplineRoad : MonoBehaviour
 
                 //make vertices for spline wall faces
                 Vector3 p5h = m_vertsP1[vertoffset - 1];
-                p5h = new Vector3(p5h.x,p5h.y + wallHeight,p5h.z);
-                
+                p5h = new Vector3(p5h.x, p5h.y + wallHeight, p5h.z);
+
                 Vector3 p6h = m_vertsP2[vertoffset - 1];
-                p6h = new Vector3(p6h.x,p6h.y + wallHeight,p6h.z);
-                
+                p6h = new Vector3(p6h.x, p6h.y + wallHeight, p6h.z);
+
                 Vector3 p7h = m_vertsP1[vertoffset];
-                p7h = new Vector3(p7h.x,p7h.y + wallHeight,p7h.z);
-                
+                p7h = new Vector3(p7h.x, p7h.y + wallHeight, p7h.z);
+
                 Vector3 p8h = m_vertsP2[vertoffset];
-                p8h = new Vector3(p8h.x,p8h.y + wallHeight,p8h.z);
-        
+                p8h = new Vector3(p8h.x, p8h.y + wallHeight, p8h.z);
+
 
                 int num_verts = 12;
 
@@ -153,9 +144,8 @@ public class SplineRoad : MonoBehaviour
                 };
 
                 // add the offset to all the triangles
-                for (int i = 0; i < segment_triangles.Count; i++)
-                {
-                  segment_triangles[i] += offset;
+                for (int i = 0; i < segment_triangles.Count; i++) {
+                    segment_triangles[i] += offset;
                 }
                 tris.AddRange(segment_triangles);
 
@@ -182,9 +172,8 @@ public class SplineRoad : MonoBehaviour
 
                 // multiply by the distance and then add the offset
                 // but just to the u value
-                for (int i = 0; i < uv_list.Count; i++)
-                {
-                  uv_list[i] = new Vector2(uv_list[i].x  * distance + uvOffset, uv_list[i].y);
+                for (int i = 0; i < uv_list.Count; i++) {
+                    uv_list[i] = new Vector2(uv_list[i].x * distance + uvOffset, uv_list[i].y);
                 }
 
                 uvs.AddRange(uv_list);
@@ -210,29 +199,26 @@ public class SplineRoad : MonoBehaviour
         m.SetNormals(normals);
 
 
-       /*
-        
-        m.SetUVs(1, uvsB);
-*/
+        /*
+
+         m.SetUVs(1, uvsB);
+ */
 
 
         m_meshFilter.mesh = m;
-        
+
         navMesh.BuildNavMesh();
     }
 
-    private void GetSplineVerts()
-    {
+    private void GetSplineVerts() {
         m_vertsP1 = new List<Vector3>();
         m_vertsP2 = new List<Vector3>();
 
         float step = 1f / (float)resolution;
         Vector3 p1;
         Vector3 p2;
-        for (int j = 0; j < m_splineSampler.NumSplines; j++)
-        {
-            for (int i = 0; i < resolution; i++)
-            {
+        for (int j = 0; j < m_splineSampler.NumSplines; j++) {
+            for (int i = 0; i < resolution; i++) {
                 float t = step * i;
                 m_splineSampler.SampleSplineWidth(j, t, m_width, out p1, out p2);
                 m_vertsP1.Add(p1);
@@ -245,47 +231,40 @@ public class SplineRoad : MonoBehaviour
         }
     }
 
-    struct JunctionEdge
-    {
+    struct JunctionEdge {
         public Vector3 left;
         public Vector3 right;
 
-        public Vector3 Center => (left + right)/2;
+        public Vector3 Center => (left + right) / 2;
 
-        public JunctionEdge (Vector3 p1, Vector3 p2)
-        {
+        public JunctionEdge(Vector3 p1, Vector3 p2) {
             this.left = p1;
             this.right = p2;
         }
     }
 
-    private void GetIntersectionVerts(List<Vector3> verts, List<int> tris, List<Vector2> uvs)
-    {
+    private void GetIntersectionVerts(List<Vector3> verts, List<int> tris, List<Vector2> uvs) {
         int offset = verts.Count;
 
         //Get intersection verts
-        for (int i = 0; i < intersections.Count; i++)
-        {
+        for (int i = 0; i < intersections.Count; i++) {
             Intersection intersection = intersections[i];
             int count = 0;
             //List<Vector3> points = new List<Vector3>();
-            
+
             List<JunctionEdge> junctionEdges = new List<JunctionEdge>();
 
             Vector3 center = new Vector3();
-            foreach (JunctionInfo junction in intersection.GetJunctions())
-            {
+            foreach (JunctionInfo junction in intersection.GetJunctions()) {
                 int splineIndex = junction.splineIndex;
                 float t = junction.knotIndex == 0 ? 0f : 1f;
                 m_splineSampler.SampleSplineWidth(splineIndex, t, m_width, out Vector3 p1, out Vector3 p2);
                 //If knot index is 0 we're facing away from the junction
                 //If we're more than zero we're facing the junction
-                if (junction.knotIndex == 0)
-                {
+                if (junction.knotIndex == 0) {
                     junctionEdges.Add(new JunctionEdge(p1, p2));
                 }
-                else
-                {
+                else {
                     junctionEdges.Add(new JunctionEdge(p2, p1));
 
                 }
@@ -294,7 +273,7 @@ public class SplineRoad : MonoBehaviour
                 count++;
             }
             center = center / (junctionEdges.Count * 2);
-            
+
 
             //Sort the junctions based on their direction from the center
             junctionEdges.Sort((x, y) => SortPoints(center, x.Center, y.Center));
@@ -307,19 +286,17 @@ public class SplineRoad : MonoBehaviour
             Vector3 b;
             Vector3 a;
             BezierCurve curve;
-            for (int j = 1; j <= junctionEdges.Count; j++)
-            {
+            for (int j = 1; j <= junctionEdges.Count; j++) {
                 a = junctionEdges[j - 1].left;
                 curvePoints.Add(a);
                 b = (j < junctionEdges.Count) ? junctionEdges[j].right : junctionEdges[0].right;
                 mid = Vector3.Lerp(a, b, 0.5f);
                 Vector3 dir = center - mid;
                 mid = mid - dir;
-                c = Vector3.Lerp(mid, center, intersection.curves[j-1]);
+                c = Vector3.Lerp(mid, center, intersection.curves[j - 1]);
 
                 curve = new BezierCurve(a, c, b);
-                for (float t = 0f; t < 1f; t += m_curveStep)
-                {
+                for (float t = 0f; t < 1f; t += m_curveStep) {
                     Vector3 pos = CurveUtility.EvaluatePosition(curve, t);
                     curvePoints.Add(pos);
                 }
@@ -331,20 +308,17 @@ public class SplineRoad : MonoBehaviour
 
             int pointsOffset = verts.Count;
 
-            for (int j = 1; j <= curvePoints.Count; j++)
-            {
+            for (int j = 1; j <= curvePoints.Count; j++) {
 
                 Vector3 pointA = curvePoints[j - 1];
                 Vector3 pointB;
-                if (j == curvePoints.Count)
-                {
+                if (j == curvePoints.Count) {
                     pointB = curvePoints[0];
                 }
-                else
-                {
+                else {
                     pointB = curvePoints[j];
                 }
-                
+
                 verts.Add(center);
                 verts.Add(pointA);
                 verts.Add(pointB);
@@ -427,34 +401,28 @@ public class SplineRoad : MonoBehaviour
         }
     }
 
-    private int SortPoints(Vector3 center, Vector3 x, Vector3 y)
-    {
+    private int SortPoints(Vector3 center, Vector3 x, Vector3 y) {
         Vector3 xDir = x - center;
         Vector3 yDir = y - center;
 
         float angleA = Vector3.SignedAngle(center.normalized, xDir.normalized, Vector3.up);
         float angleB = Vector3.SignedAngle(center.normalized, yDir.normalized, Vector3.up);
 
-        if (angleA > angleB)
-        {
+        if (angleA > angleB) {
             return -1;
         }
-        if (angleA < angleB)
-        {
+        if (angleA < angleB) {
             return 1;
         }
-        else
-        {
+        else {
             return 0;
         }
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         Spline.Changed -= OnSplineChanged;
     }
-    private void OnDrawGizmosSelected()
-    {  
+    private void OnDrawGizmosSelected() {
         /*
         for (int i = 0; i < m_vertsP1.Count; i++)
         {
@@ -544,14 +512,12 @@ public class SplineRoad : MonoBehaviour
         */
     }
 
-        public void AddJunction(Intersection junction)
-    {
-        if(intersections == null)
-        {
+    public void AddJunction(Intersection junction) {
+        if (intersections == null) {
             intersections = new List<Intersection>();
         }
-        
+
         intersections.Add(junction);
-        
+
     }
 }

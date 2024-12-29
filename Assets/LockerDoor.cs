@@ -4,8 +4,7 @@ using System.Threading;
 using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 
-public class LockerDoor : MonoBehaviour
-{
+public class LockerDoor : MonoBehaviour {
     public GameObject doorP;
     public float doorAngle;
 
@@ -14,43 +13,42 @@ public class LockerDoor : MonoBehaviour
 
     public bool open = false;
     // Start is called before the first frame update
-    void Start()
-    {
-        
-        
+    void Start() {
+
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
 
-    
-        if(open){
-            
-            if(timer < .7f ){
+
+        if (open) {
+
+            if (timer < .7f) {
                 timer = timer + Time.deltaTime;
-                doorAngle =  Mathf.Lerp(0,-166.65f,timer/.7f);
-                
+                doorAngle = Mathf.Lerp(0, -166.65f, timer / .7f);
+
             }
-         
-    }else{
-        
-           if(timer < .7f ){
+
+        }
+        else {
+
+            if (timer < .7f) {
                 timer = timer + Time.deltaTime;
-                  doorAngle =  Mathf.Lerp(-166.65f,0,timer/.7f);
+                doorAngle = Mathf.Lerp(-166.65f, 0, timer / .7f);
             }
+        }
+        doorP.transform.localEulerAngles = new Vector3(0, doorAngle, 0);
     }
-        doorP.transform.localEulerAngles = new Vector3(0,doorAngle,0);
+    public void openClose() {
+
+        open = !open;
+        timer = 0;
+        startAngle = doorP.transform.localEulerAngles.y;
+
+
+
+
     }
-public void openClose(){
 
-open = !open;
-timer = 0;
-startAngle = doorP.transform.localEulerAngles.y;
-
-                    
-
-
-}
-   
 }

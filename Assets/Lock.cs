@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class Lock : MonoBehaviour
-{
+public class Lock : MonoBehaviour {
     public bool hasKey = false;
     // Start is called before the first frame update
-   public void insertKey(){
+    public void insertKey() {
 
-    hasKey = true;
+        hasKey = true;
 
 
-   }
+    }
 }

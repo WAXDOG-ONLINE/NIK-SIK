@@ -6,16 +6,13 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 [System.Serializable]
-public class Intersection
-{
+public class Intersection {
     public List<JunctionInfo> junctions;
     public List<float> curves;
 
 
-    public void AddJunction(int splineIndex, int knotIndex, Spline spline)
-    {
-        if (junctions == null)
-        {
+    public void AddJunction(int splineIndex, int knotIndex, Spline spline) {
+        if (junctions == null) {
             junctions = new List<JunctionInfo>();
             curves = new List<float>();
         }
@@ -25,35 +22,30 @@ public class Intersection
 
     }
     public Vector3 Center {
-        get
-        {
+        get {
             Vector3 center = new Vector3();
-            foreach(JunctionInfo junction in junctions)
-            {
+            foreach (JunctionInfo junction in junctions) {
                 center += (Vector3)junction.knot.Position;
             }
             center = center / junctions.Count;
-            
+
             return center;
         }
     }
 
-    internal IEnumerable<JunctionInfo> GetJunctions()
-    {
+    internal IEnumerable<JunctionInfo> GetJunctions() {
         return junctions;
     }
 }
 
 [System.Serializable]
-public struct JunctionInfo
-{
+public struct JunctionInfo {
     public int splineIndex;
     public int knotIndex;
     public Spline spline;
     public BezierKnot knot => spline.Knots.ToArray()[knotIndex];
 
-    public JunctionInfo(int splineIndex, int knotIndex, Spline spline) : this()
-    {
+    public JunctionInfo(int splineIndex, int knotIndex, Spline spline) : this() {
         this.splineIndex = splineIndex;
         this.knotIndex = knotIndex;
         this.spline = spline;
